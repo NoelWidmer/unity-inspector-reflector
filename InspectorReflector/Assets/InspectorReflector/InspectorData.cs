@@ -9,7 +9,7 @@ public class InspectorData : InspectorFoldout
 
 
 
-	public InspectorProperty AddProperty(string[] foldouts, string propertyName, PropertyInfo propertyInfo)
+	public InspectorProperty AddProperty(string[] foldouts, string propertyName, PropertyInfo propertyInfo, InspectorAttribute attribute)
 	{
 		if(foldouts == null)
 			throw new ArgumentNullException("foldouts");
@@ -42,7 +42,7 @@ public class InspectorData : InspectorFoldout
 			}
 		}
 
-		InspectorProperty inspectorProperty = new InspectorProperty(propertyInfo, propertyName);
+		InspectorProperty inspectorProperty = new InspectorProperty(propertyInfo, propertyName, attribute.Readonly);
 
 		if(foldoutToAddTo.Records.ContainsKey(inspectorProperty.Name))
 			throw new InvalidOperationException("name already exists in inspector.");

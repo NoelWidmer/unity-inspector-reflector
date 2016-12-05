@@ -7,8 +7,9 @@ public class InspectorAttribute : Attribute
 	/// <summary>
 	///		Marks a property for display in the inspector.
 	/// </summary>
-	public InspectorAttribute()
+	public InspectorAttribute(bool @readonly = false)
 	{
+		Readonly = @readonly;
 	}
 
 
@@ -20,10 +21,12 @@ public class InspectorAttribute : Attribute
 	///		If the <paramref name="propertyPath"/> ends with a "/" the actual name of the property will be used as the name of the property.
 	///		Otherwise the last part of the path will be used as the name of the property.
 	/// </param>
-	public InspectorAttribute(string propertyPath)
+	public InspectorAttribute(string propertyPath, bool @readonly = false)
 	{
 		if(propertyPath == null)
 			throw new ArgumentNullException("propertyPath");
+
+		Readonly = @readonly;
 
 		string[] path = propertyPath.Split('/');
 
@@ -41,7 +44,10 @@ public class InspectorAttribute : Attribute
 			}
 		}
 	}
-	
+
+
+
+	public readonly bool Readonly;
 	public readonly string PropertyName = null;
 	public readonly string[] FoldoutPath = null;
 }

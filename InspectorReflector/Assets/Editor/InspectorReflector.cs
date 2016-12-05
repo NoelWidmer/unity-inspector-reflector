@@ -9,7 +9,7 @@ public class InspectorReflector : Editor
 	private static readonly string _defaultTag = "Untagged";
 
 	private static int _instanceId = -1;
-	private static InspectorData _root = null;
+	private static InspectorData _data = null;
 
 	private Dictionary<string, Func<string, object, object>> _defaultLookup = new Dictionary<string, Func<string, object, object>>();
 	private Dictionary<string, Func<object, string>> _readonlyLookup = new Dictionary<string, Func<object, string>>();
@@ -60,6 +60,8 @@ public class InspectorReflector : Editor
 		AddCallback<Rect>((name, val) => EditorGUILayout.RectField(name, (Rect)val));
 		AddCallback<Color>((name, val) => EditorGUILayout.ColorField(name, (Color)val));
 		AddCallback<AnimationCurve>((name, val) => EditorGUILayout.CurveField(name, (AnimationCurve)val));
+		AddCallback<GameObject>((name, val) => EditorGUILayout.ObjectField(name, (GameObject)val, typeof(GameObject), false));
+		AddCallback<Sprite>((name, val) => EditorGUILayout.ObjectField(name, (Sprite)val, typeof(Sprite), false));
 
 		//Vectors
 		AddCallback<Vector2>((name, val) => EditorGUILayout.Vector2Field(name, (Vector2)val));
@@ -122,7 +124,7 @@ public class InspectorReflector : Editor
 		if(_instanceId != target.GetHashCode())
 		{
 			_instanceId = target.GetHashCode();
-			_root = new InspectorData();
+			_data = new InspectorData();
 
 			var properties = target.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			foreach(var property in properties)
@@ -137,12 +139,12 @@ public class InspectorReflector : Editor
 				{
 					var attribute = (InspectorAttribute)Attribute.GetCustomAttribute(property, typeof(InspectorAttribute));
 					string[] foldouts = attribute.FoldoutPath == null ? new string[] { } : attribute.FoldoutPath;
-					_root.AddProperty(foldouts, attribute.PropertyName == null ? property.Name : attribute.PropertyName, property);
+					_data.AddProperty(foldouts, attribute.PropertyName == null ? property.Name : attribute.PropertyName, property, attribute);
 				}
 			}
 		}
 
-		DrawFoldout(_root, target);
+		DrawFoldout(_data, target);
 	}
 
 
@@ -186,7 +188,7 @@ public class InspectorReflector : Editor
 		string aqtn = inspectorProperty.PropertyInfo.PropertyType.AssemblyQualifiedName;
 		object origVal = inspectorProperty.PropertyInfo.GetValue(instance, null);
 
-		if(inspectorProperty.PropertyInfo.CanWrite == false)
+		if(!inspectorProperty.PropertyInfo.CanWrite || !inspectorProperty.PropertyInfo.GetSetMethod(true).IsPublic || inspectorProperty.Readonly)
 		{
 			Func<object, string> call;
 
@@ -200,7 +202,7 @@ public class InspectorReflector : Editor
 				{
 					DisplayReadonlyProperty(inspectorProperty, origVal);
 				} else {
-					throw new NotSupportedException("the following type is not supported for readonly viewing: " + aqtn);
+					throw new NotSupportedException("The following type is not yet supported for readonly viewing: " + aqtn);
 				}
 			}
 		}
@@ -237,6 +239,7 @@ public class InspectorReflector : Editor
 			if(newVal != origVal)
 			{
 				inspectorProperty.PropertyInfo.SetValue(instance, newVal, null);
+				EditorUtility.SetDirty((UnityEngine.Object)instance);
 			}
 		}
 	}
@@ -259,7 +262,7 @@ public class InspectorReflector : Editor
 
 	private object UpdateTagProperty(InspectorProperty inspectorProperty, object origVal)
 	{
-		object newVal = EditorGUILayout.TagField(inspectorProperty.Name, origVal.ToString());
+		object newVal = EditorGUILayout.TagField(inspectorProperty.Name, origVal == null ? null : origVal.ToString());
 
 		if(newVal == null || ((string)newVal) == string.Empty)
 		{
@@ -326,7 +329,7 @@ public class InspectorReflector : Editor
 		}
 		else
 		{
-			throw new NotSupportedException("The following type is not yet supported by the InspectorReflector: " + aqtn);
+			throw new NotSupportedException("The following type is not yet supported: " + aqtn);
 		}
 	}
 }
