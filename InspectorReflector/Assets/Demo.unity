@@ -90,6 +90,87 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &34435645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 34435647}
+  - 114: {fileID: 34435646}
+  m_Layer: 0
+  m_Name: test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &34435646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 34435645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c87fab5563a6b499c3a9f1f42731c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AField: yolo
+  _aString: test2
+  _aTag: Untagged
+  _aBool: 1
+  _aBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  _aRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  _aColor: {r: 0, g: 0, b: 0, a: 0}
+  _aCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _aVector2: {x: 0, y: 0}
+  _aVector3: {x: 0, y: 0, z: 0}
+  _aVector4: {x: 0, y: 0, z: 0, w: 0}
+  _aVector2Slider: {x: 0, y: 0}
+  _aByte: 5
+  _anSByte: 5
+  _aShort: 5
+  _anUShort: 5
+  _anInt: 5
+  _anUInt: 5
+  _aLong: 5
+  _aULong: 5
+  _aByteSlider: 5
+  _anSByteSlider: 5
+  _aShortSlider: 5
+  _anUShortSlider: 5
+  _anIntSlider: 5
+  _anEnum: 0
+  _aFloat: 5
+  _aDouble: 5
+  _aFloatSlider: 5
+--- !u!4 &34435647
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 34435645}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1 &1030318758
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,8 +211,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c87fab5563a6b499c3a9f1f42731c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _aString: 'Write here: '
-  _aTag: 
+  AField: Some field string
+  _aString: test1
+  _aTag: Untagged
   _aBool: 1
   _aBounds:
     m_Center: {x: 0, y: 0, z: 0}

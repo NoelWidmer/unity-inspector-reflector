@@ -1,7 +1,11 @@
+using System;
 using UnityEngine;
 
 public class Sample : MonoBehaviour
 {
+	[Inspector("Fields/")]
+	public string AField = "Some field string";
+
 	#region Readonly
 
 	[Inspector("Readonly/String")]

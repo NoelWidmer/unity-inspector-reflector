@@ -4,17 +4,20 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
+
 public class InspectorReflector : Editor
 {
 	private static readonly string _defaultTag = "Untagged";
 
-	private static int _instanceId = -1;
+	private static int _targetId = -1;
 	private static InspectorData _data = null;
+
+
 
 	private Dictionary<string, Func<string, object, object>> _defaultLookup = new Dictionary<string, Func<string, object, object>>();
 	private Dictionary<string, Func<object, string>> _readonlyLookup = new Dictionary<string, Func<object, string>>();
 
-	private Dictionary<string, Type> _intSliderAttributeLookup = new Dictionary<string, Type>();	
+	private Dictionary<string, Type> _intSliderAttributeLookup = new Dictionary<string, Type>();
 	private Dictionary<string, Func<int, object>> _sliderIntToX = new Dictionary<string, Func<int, object>>();
 	private Dictionary<string, Func<object, int>> _sliderXToInt = new Dictionary<string, Func<object, int>>();
 
@@ -41,14 +44,12 @@ public class InspectorReflector : Editor
 		AddReadonly<decimal>((myself) => myself.ToString());
 
 		//Readonly special
-		AddReadonly<Rect>((myself) =>
-		{
+		AddReadonly<Rect>((myself) => {
 			Rect me = (Rect)myself;
 			return string.Format("Origin: ({0}, {1}), Size: ({2}, {3})", me.x, me.y, me.width, me.height);
 		});
 
-		AddReadonly<Color>((myself) =>
-		{
+		AddReadonly<Color>((myself) => {
 			Color me = (Color)myself;
 			return string.Format("RGBA: ({0}, {1}, {2}, {3})", me.r, me.g, me.b, me.a);
 		});
@@ -96,21 +97,21 @@ public class InspectorReflector : Editor
 
 
 
-	public void AddReadonly<T>(Func<object, string> call)
+	private void AddReadonly<T>(Func<object, string> call)
 	{
 		_readonlyLookup.Add(typeof(T).AssemblyQualifiedName, call);
 	}
 
 
 
-	public void AddCallback<T>(Func<string, object, object> call)
+	private void AddCallback<T>(Func<string, object, object> call)
 	{
 		_defaultLookup.Add(typeof(T).AssemblyQualifiedName, call);
 	}
 
 
 
-	public void AddSlideable<TType, TAttribute>(Func<object, int> xToInt, Func<int, object> intToX) where TAttribute : InspectorSliderIntAttribute
+	private void AddSlideable<TType, TAttribute>(Func<object, int> xToInt, Func<int, object> intToX) where TAttribute : InspectorSliderIntAttribute
 	{
 		_sliderXToInt.Add(typeof(TType).AssemblyQualifiedName, xToInt);
 		_sliderIntToX.Add(typeof(TType).AssemblyQualifiedName, intToX);
@@ -121,148 +122,187 @@ public class InspectorReflector : Editor
 
 	public override void OnInspectorGUI()
 	{
-		if(_instanceId != target.GetHashCode())
+		try
 		{
-			_instanceId = target.GetHashCode();
+			Undo.RecordObject(target, "test");
+			Draw(target);
+		} catch(Exception ex)
+		{
+			Debug.Log(ex.Message);
+		}
+	}
+
+
+
+	private void Draw(object victim)
+	{
+		if(_targetId != victim.GetHashCode())
+		{
+			_targetId = victim.GetHashCode();
 			_data = new InspectorData();
 
-			var properties = target.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-			foreach(var property in properties)
+			var members = victim.GetType().GetMembers(BindingFlags.Public | BindingFlags.Instance);
+
+			if(members != null)
 			{
-				if(property.GetIndexParameters().Length != 0)
-					continue;
-
-				if(!Attribute.IsDefined(property, typeof(InspectorAttribute)))
-					continue;
-
-				if(property.CanRead)
+				foreach(var member in members)
 				{
-					var attribute = (InspectorAttribute)Attribute.GetCustomAttribute(property, typeof(InspectorAttribute));
-					string[] foldouts = attribute.FoldoutPath == null ? new string[] { } : attribute.FoldoutPath;
-					_data.AddProperty(foldouts, attribute.PropertyName == null ? property.Name : attribute.PropertyName, property, attribute);
+					if(member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field)
+					{
+						if(!Attribute.IsDefined(member, typeof(InspectorAttribute)))
+							continue;
+
+						if(member.MemberType == MemberTypes.Property)
+						{
+							PropertyInfo property = (PropertyInfo)member;
+
+							if(!property.CanRead)
+								continue; //TODO maybe show an inspector warning?
+
+							var indexParams = property.GetIndexParameters();
+							if(indexParams == null || indexParams.Length != 0)
+								continue; //TODO maybe show an inspector warning?
+						}
+
+						var attribute = (InspectorAttribute)Attribute.GetCustomAttribute(member, typeof(InspectorAttribute));
+
+						_data.AddMember(attribute.FoldoutPath, member, attribute);
+					}
 				}
 			}
 		}
 
-		DrawFoldout(_data, target);
+		DrawFoldout(_data, victim);
 	}
 
 
 
-	private void DrawFoldout(InspectorFoldout foldout, object instance)
+	private void DrawFoldout(InspectorFoldout foldout, object victim)
 	{
-		foreach(var keyValue in foldout.Records)
+		if(foldout.Records != null)
 		{
-			InspectorRecord inspectorRecord = keyValue.Value;
-
-			if(inspectorRecord.IsFoldout)
+			foreach(var keyValue in foldout.Records)
 			{
-				InspectorFoldout inspectorFoldout = (InspectorFoldout)inspectorRecord;
-				inspectorFoldout.IsOpen = EditorGUILayout.Foldout(inspectorFoldout.IsOpen, inspectorFoldout.Name);
+				InspectorRecord inspectorRecord = keyValue.Value;
 
-				if(inspectorFoldout.IsOpen)
+				if(inspectorRecord.Type == InspectorRecordType.Foldout)
 				{
-					EditorGUILayout.BeginHorizontal();
-					EditorGUILayout.BeginVertical();
-					EditorGUI.indentLevel++;
+					InspectorFoldout inspectorFoldout = (InspectorFoldout)inspectorRecord;
+					inspectorFoldout.IsOpen = EditorGUILayout.Foldout(inspectorFoldout.IsOpen, inspectorFoldout.DisplayName);
 
-					DrawFoldout(inspectorFoldout, instance);
+					if(inspectorFoldout.IsOpen)
+					{
+						EditorGUI.indentLevel++;
 
-					EditorGUI.indentLevel--;
-					EditorGUILayout.EndVertical();
-					EditorGUILayout.EndHorizontal();
+						//try
+						//{
+							DrawFoldout(inspectorFoldout, victim);
+						/*} catch(Exception ex)
+						{
+							Debug.LogError(string.Format("InspectorReflector: {0}", ex.Message));
+						}*/
+
+						EditorGUI.indentLevel--;
+					}
+				} else if(inspectorRecord.Type == InspectorRecordType.Property)
+				{
+					InspectorProperty inspectorProperty = (InspectorProperty)inspectorRecord;
+					DrawMember(
+						inspectorProperty,
+						victim,
+						(__obj) => inspectorProperty.PropertyInfo.GetValue(__obj, null),
+						(__obj, __newVal) => inspectorProperty.PropertyInfo.SetValue(__obj, __newVal, null)
+						);
+				} else
+				{
+					InspectorField inspectorField = (InspectorField)inspectorRecord;
+					DrawMember(
+						inspectorField,
+						victim,
+						(__obj) => inspectorField.FieldInfo.GetValue(__obj),
+						(__obj, __newVal) => inspectorField.FieldInfo.SetValue(__obj, __newVal)
+						);
 				}
-			}
-			else
-			{
-				InspectorProperty inspectorProperty = (InspectorProperty)inspectorRecord;
-				UpdateProperty(inspectorProperty, instance);
 			}
 		}
 	}
 
 
 
-	private void UpdateProperty(InspectorProperty inspectorProperty, object instance)
+	private void DrawMember(InspectorMember inspectorMember, object victim, Func<object, object> get, Action<object, object> set)
 	{
-		string aqtn = inspectorProperty.PropertyInfo.PropertyType.AssemblyQualifiedName;
-		object origVal = inspectorProperty.PropertyInfo.GetValue(instance, null);
+		string aqtn = inspectorMember.ActualType.AssemblyQualifiedName;
+		object origVal = get(victim);
 
-		if(!inspectorProperty.PropertyInfo.CanWrite || !inspectorProperty.PropertyInfo.GetSetMethod(true).IsPublic || inspectorProperty.Readonly)
+		if(inspectorMember.Readonly)
 		{
 			Func<object, string> call;
 
 			if(_readonlyLookup.TryGetValue(aqtn, out call))
 			{
-				DisplayReadonlyProperty(inspectorProperty, call(origVal));
-			}
-			else
+				DisplayReadonlyMember(inspectorMember, call(origVal));
+			} else
 			{
-				if(inspectorProperty.PropertyInfo.PropertyType.IsEnum)
+				if(inspectorMember.ActualType.IsEnum)
 				{
-					DisplayReadonlyProperty(inspectorProperty, origVal);
-				} else {
+					DisplayReadonlyMember(inspectorMember, origVal);
+				} else
+				{
 					throw new NotSupportedException("The following type is not yet supported for readonly viewing: " + aqtn);
 				}
 			}
-		}
+		} 
 		else
 		{
-			Type popertyType = inspectorProperty.PropertyInfo.PropertyType;
 			object newVal;
 
-			if(popertyType.IsEnum)
+			if(inspectorMember.ActualType.IsEnum)
 			{
-				newVal = UpdateEnumProperty(inspectorProperty, origVal);
-			}
-			else if(popertyType == typeof(string) && Attribute.IsDefined(inspectorProperty.PropertyInfo, typeof(InspectorTagAttribute)))
+				newVal = UpdateEnumMember(inspectorMember, origVal);
+			} else if(inspectorMember.ActualType == typeof(string) && Attribute.IsDefined(inspectorMember.MemberInfo, typeof(InspectorTagAttribute)))
 			{
-				newVal = UpdateTagProperty(inspectorProperty, origVal);
-			}
-			else if(popertyType == typeof(Vector2) && Attribute.IsDefined(inspectorProperty.PropertyInfo, typeof(InspectorSliderVector2Attribute)))
+				newVal = UpdateTagMember(inspectorMember, origVal);
+			} else if(inspectorMember.ActualType == typeof(Vector2) && Attribute.IsDefined(inspectorMember.MemberInfo, typeof(InspectorSliderVector2Attribute)))
 			{
-				newVal = UpdateVector2SliderProperty(inspectorProperty, origVal);
-			}
-			else if(_intSliderAttributeLookup.ContainsKey(aqtn) && Attribute.IsDefined(inspectorProperty.PropertyInfo, typeof(InspectorSliderIntAttribute)))
+				newVal = UpdateVector2SliderMember(inspectorMember, origVal);
+			} else if(_intSliderAttributeLookup.ContainsKey(aqtn) && Attribute.IsDefined(inspectorMember.MemberInfo, typeof(InspectorSliderIntAttribute)))
 			{
-				newVal = UpdateIntSliderProperty(inspectorProperty, origVal);
-			}
-			else if(popertyType == typeof(float) && Attribute.IsDefined(inspectorProperty.PropertyInfo, typeof(InspectorSliderFloatAttribute)))
+				newVal = UpdateIntSliderMember(inspectorMember, origVal);
+			} else if(inspectorMember.ActualType == typeof(float) && Attribute.IsDefined(inspectorMember.MemberInfo, typeof(InspectorSliderFloatAttribute)))
 			{
-				newVal = UpdateFloatSliderProperty(inspectorProperty, origVal);
-			}
-			else
+				newVal = UpdateFloatSliderMember(inspectorMember, origVal);
+			} else
 			{
-				newVal = UpdateStandardProperty(inspectorProperty, origVal);
+				newVal = ÜpdateStandardMember(inspectorMember, origVal);
 			}
 
 			if(newVal != origVal)
 			{
-				inspectorProperty.PropertyInfo.SetValue(instance, newVal, null);
-				EditorUtility.SetDirty((UnityEngine.Object)instance);
+				set(victim, newVal);
+				//EditorUtility.SetDirty((UnityEngine.Object)victim);
 			}
 		}
 	}
 
+	#region Display member
 
-
-	private void DisplayReadonlyProperty(InspectorProperty inspectorProperty, object origVal)
+	private void DisplayReadonlyMember(InspectorMember inspectorMember, object origVal)
 	{
-		EditorGUILayout.LabelField(inspectorProperty.Name, origVal.ToString());
+		EditorGUILayout.LabelField(inspectorMember.DisplayName, origVal.ToString());
 	}
 
 
 
-	private object UpdateEnumProperty(InspectorProperty inspectorProperty, object origVal)
+	private object UpdateEnumMember(InspectorMember inspectorMember, object origVal)
 	{
-		return EditorGUILayout.EnumPopup(inspectorProperty.Name, (Enum)origVal);
+		return EditorGUILayout.EnumPopup(inspectorMember.DisplayName, (Enum)origVal);
 	}
 
 
 
-	private object UpdateTagProperty(InspectorProperty inspectorProperty, object origVal)
+	private object UpdateTagMember(InspectorMember inspectorMember, object origVal)
 	{
-		object newVal = EditorGUILayout.TagField(inspectorProperty.Name, origVal == null ? null : origVal.ToString());
+		object newVal = EditorGUILayout.TagField(inspectorMember.DisplayName, origVal == null ? null : origVal.ToString());
 
 		if(newVal == null || ((string)newVal) == string.Empty)
 		{
@@ -274,11 +314,11 @@ public class InspectorReflector : Editor
 
 
 
-	private object UpdateVector2SliderProperty(InspectorProperty inspectorProperty, object origVal)
+	private object UpdateVector2SliderMember(InspectorMember inspectorMember, object origVal)
 	{
 		Vector2 origVector2 = (Vector2)origVal;
-		InspectorSliderVector2Attribute attr = (InspectorSliderVector2Attribute)Attribute.GetCustomAttribute(inspectorProperty.PropertyInfo, typeof(InspectorSliderVector2Attribute));
-		EditorGUILayout.MinMaxSlider(new GUIContent(inspectorProperty.Name), ref origVector2.x, ref origVector2.y, attr.MinLimit, attr.MaxLimit, null);
+		InspectorSliderVector2Attribute attr = (InspectorSliderVector2Attribute)Attribute.GetCustomAttribute(inspectorMember.MemberInfo, typeof(InspectorSliderVector2Attribute));
+		EditorGUILayout.MinMaxSlider(new GUIContent(inspectorMember.DisplayName), ref origVector2.x, ref origVector2.y, attr.MinLimit, attr.MaxLimit, null);
 
 		if(attr.ShowValues)
 		{
@@ -290,46 +330,46 @@ public class InspectorReflector : Editor
 
 
 
-	private object UpdateIntSliderProperty(InspectorProperty inspectorProperty, object origVal)
+	private object UpdateIntSliderMember(InspectorMember inspectorMember, object origVal)
 	{
-		string aqtn = inspectorProperty.PropertyInfo.PropertyType.AssemblyQualifiedName;
+		string aqtn = inspectorMember.ActualType.AssemblyQualifiedName;
 
 		var intToX = _sliderIntToX[aqtn];
 		var xToInt = _sliderXToInt[aqtn];
 		var attrType = _intSliderAttributeLookup[aqtn];
 
-		if(!Attribute.IsDefined(inspectorProperty.PropertyInfo, attrType))
-		{
+		if(!Attribute.IsDefined(inspectorMember.MemberInfo, attrType))
 			throw new NotSupportedException("expected an another attribute.");
-		}
 
-		InspectorSliderIntAttribute attr = (InspectorSliderIntAttribute)Attribute.GetCustomAttribute(inspectorProperty.PropertyInfo, attrType);
-		int result = EditorGUILayout.IntSlider(new GUIContent(inspectorProperty.Name), xToInt(origVal), attr.Min, attr.Max, null);
+		InspectorSliderIntAttribute attr = (InspectorSliderIntAttribute)Attribute.GetCustomAttribute(inspectorMember.MemberInfo, attrType);
+		int result = EditorGUILayout.IntSlider(new GUIContent(inspectorMember.DisplayName), xToInt(origVal), attr.Min, attr.Max, null);
 		return intToX(result);
 	}
 
 
 
-	private object UpdateFloatSliderProperty(InspectorProperty inspectorProperty, object origVal)
+	private object UpdateFloatSliderMember(InspectorMember inspectorMember, object origVal)
 	{
-		InspectorSliderFloatAttribute attr = (InspectorSliderFloatAttribute)Attribute.GetCustomAttribute(inspectorProperty.PropertyInfo, typeof(InspectorSliderFloatAttribute));
-		return EditorGUILayout.Slider(new GUIContent(inspectorProperty.Name), (float)origVal, attr.Min, attr.Max, null);
+		InspectorSliderFloatAttribute attr = (InspectorSliderFloatAttribute)Attribute.GetCustomAttribute(inspectorMember.MemberInfo, typeof(InspectorSliderFloatAttribute));
+		return EditorGUILayout.Slider(new GUIContent(inspectorMember.DisplayName), (float)origVal, attr.Min, attr.Max, null);
 	}
 
 
 
-	private object UpdateStandardProperty(InspectorProperty inspectorProperty, object origVal)
+	private object ÜpdateStandardMember(InspectorMember inspectorMember, object origVal)
 	{
-		Func<string, object, object> createInspectorRecord;
-		string aqtn = inspectorProperty.PropertyInfo.PropertyType.AssemblyQualifiedName;
+		string aqtn = inspectorMember.ActualType.AssemblyQualifiedName;
 
-		if(_defaultLookup.TryGetValue(aqtn, out createInspectorRecord))
+		Func<string, object, object> drawDefaultInspectorMember;
+
+		if(_defaultLookup.TryGetValue(aqtn, out drawDefaultInspectorMember))
 		{
-			return createInspectorRecord(inspectorProperty.Name, origVal);
-		}
-		else
+			return drawDefaultInspectorMember(inspectorMember.DisplayName, origVal);
+		} else
 		{
 			throw new NotSupportedException("The following type is not yet supported: " + aqtn);
 		}
 	}
+
+	#endregion
 }
