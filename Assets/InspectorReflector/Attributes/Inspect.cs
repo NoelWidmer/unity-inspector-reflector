@@ -1,5 +1,8 @@
 ﻿using System;
 
-public class Inspect : Attribute
+namespace InspectorReflector
 {
+    public class Inspect : Attribute
+    {
+    }
 }
