@@ -2,7 +2,7 @@
 
 namespace InspectorReflector
 {
-    public class Inspect : Attribute
+    public class InspectAttribute : Attribute
     {
     }
 }
