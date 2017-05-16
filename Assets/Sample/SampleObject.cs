@@ -1,11 +1,16 @@
-﻿using InspectorReflector;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SampleObject : MonoBehaviour
+namespace InspectorReflector.Sample
 {
-    [Inspect]
-    public int IntField;
-    
-    [Inspect]
-    public int IntProperty { get; set; }
+    public class SampleObject : MonoBehaviour, IInspectable
+    {
+        [Inspect]
+        public int IntField;
+
+        [Inspect]
+        public int IntProperty
+        {
+            get; set;
+        }
+    }
 }

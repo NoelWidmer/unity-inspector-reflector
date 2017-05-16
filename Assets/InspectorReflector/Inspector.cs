@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using System.Reflection;
 
@@ -8,13 +7,6 @@ namespace InspectorReflector
     [CustomEditor(typeof(object), true)]
     public class Inspector : Editor
     {
-        private static HashSet<string> _namespaces2Ignore = new HashSet<string>
-        {
-            "UnityEditor"
-        };
-
-
-
         public override void OnInspectorGUI()
         {
             object obj = target;
@@ -22,27 +14,19 @@ namespace InspectorReflector
             if(obj == null)
                 return;
 
-            if(ShouldDrawDefaultInspector(obj))
+            if(obj is IInspectable)
             {
-                DrawDefaultInspector();
+                DrawReflectedInspector((IInspectable)obj);
             }
             else
             {
-                DrawReflectedInspector(obj);
+                DrawDefaultInspector();
             }
         }
 
 
 
-        private static bool ShouldDrawDefaultInspector(object obj)
-        {
-            string ns = obj.GetType().Namespace;
-            return _namespaces2Ignore.Contains(ns);
-        }
-
-
-
-        private static void DrawReflectedInspector(object obj)
+        private static void DrawReflectedInspector(IInspectable obj)
         {
             PropertyInfo[] publicInstanceProperties;
             {
@@ -51,10 +35,7 @@ namespace InspectorReflector
                 publicInstanceProperties = obj.GetType().GetProperties(flags);
 
                 if(publicInstanceProperties == null || publicInstanceProperties.Length == 0)
-                {
-                    EditorGUILayout.LabelField("No public instance properties found.");
                     return;
-                }
             }
 
             List<PropertyInfo> nonIndexedPropoerties;
@@ -70,49 +51,36 @@ namespace InspectorReflector
                 }
 
                 if(nonIndexedPropoerties == null || nonIndexedPropoerties.Count == 0)
-                {
-                    EditorGUILayout.LabelField("Only indexed properties found.");
                     return;
-                }
             }
-            
-            List<PropertyAndInspectAttribute> inspectableProperties = GetInspectableProperties(nonIndexedPropoerties);
 
-            if(inspectableProperties != null && inspectableProperties.Count != 0)
+
+            List<PropertyAndInspectAttribute> inspectableProperties;
             {
-                DrawInspectableProperties(inspectableProperties);
-            }
-            else
-            {
-                EditorGUILayout.LabelField("No inspectable properties found.");
-            }
-        }
+                inspectableProperties = new List<PropertyAndInspectAttribute>();
 
-
-
-        private static List<PropertyAndInspectAttribute> GetInspectableProperties(List<PropertyInfo> properties)
-        {
-            var result = new List<PropertyAndInspectAttribute>();
-
-            foreach(var property in properties)
-            {
-                object[] attributes = property.GetCustomAttributes(typeof(InspectAttribute), true);
-
-                if(attributes == null || attributes.Length == 0)
+                foreach(var property in nonIndexedPropoerties)
                 {
-                    //Do nothing
+                    object[] attributes = property.GetCustomAttributes(typeof(InspectAttribute), true);
+
+                    if(attributes != null)
+                    {
+                        if(attributes.Length == 1)
+                        {
+                            inspectableProperties.Add(new PropertyAndInspectAttribute(property, (InspectAttribute)attributes[0]));
+                        }
+                        else if(attributes.Length == 2)
+                        {
+                            //log
+                        }
+                    }
                 }
-                else if(attributes.Length == 1)
-                {
-                    result.Add(new PropertyAndInspectAttribute(property, (InspectAttribute)attributes[0]));
-                }
-                else
-                {
-                    EditorGUILayout.LabelField("Found multiple " + typeof(InspectAttribute).Name + "s for property " + property.Name);
-                }
+
+                if(inspectableProperties.Count == 0)
+                    return;
             }
 
-            return result;
+            DrawInspectableProperties(inspectableProperties);
         }
 
 
@@ -121,7 +89,7 @@ namespace InspectorReflector
         {
             foreach(var property in properties)
             {
-                EditorGUILayout.LabelField(property.Property.Name, "");
+                EditorGUILayout.TextField(property.Property.Name, "");
             }
         }
 
