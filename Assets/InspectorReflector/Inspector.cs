@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using System.Reflection;
+using UnityEngine;
 
 namespace InspectorReflector
 {
@@ -14,9 +15,9 @@ namespace InspectorReflector
             if(obj == null)
                 return;
 
-            if(obj is IInspectable)
+            if(ShouldReflectInspector(obj))
             {
-                DrawReflectedInspector((IInspectable)obj);
+                DrawReflectedInspector(obj);
             }
             else
             {
@@ -26,7 +27,28 @@ namespace InspectorReflector
 
 
 
-        private static void DrawReflectedInspector(IInspectable obj)
+        private bool ShouldReflectInspector(object obj)
+        {
+            object[] attributes = obj.GetType().GetCustomAttributes(typeof(InspectAttribute), true);
+
+            if(attributes == null)
+            {
+                return false;
+            }
+            else if(attributes.Length == 1)
+            {
+                return true;
+            }
+            else
+            {
+                Warn("Found multiple attributes of type " + typeof(InspectAttribute).Name + " on " + obj.GetType().FullName);
+                return false;
+            }
+        }
+
+
+
+        private static void DrawReflectedInspector(object obj)
         {
             PropertyInfo[] publicInstanceProperties;
             {
@@ -71,26 +93,44 @@ namespace InspectorReflector
                         }
                         else if(attributes.Length == 2)
                         {
-                            //log
+                            Warn("Found multiple attributes of type " + typeof(InspectAttribute).Name + " on " + property.DeclaringType.FullName + "." + property.Name);
                         }
                     }
                 }
-
-                if(inspectableProperties.Count == 0)
-                    return;
             }
+
+            if(inspectableProperties.Count == 0)
+                return;
 
             DrawInspectableProperties(inspectableProperties);
         }
 
 
 
-        private static void DrawInspectableProperties(List<PropertyAndInspectAttribute> properties)
+        private static void DrawInspectableProperties(List<PropertyAndInspectAttribute> propertyInfos)
         {
-            foreach(var property in properties)
+            foreach(var propertyInfo in propertyInfos)
             {
-                EditorGUILayout.TextField(property.Property.Name, "");
+                if(propertyInfo.Property.CanRead == false)
+                {
+                    Warn("The following property cannot be read from: " + propertyInfo.Property.DeclaringType.FullName + "." + propertyInfo.Property.Name);
+                }
+                else if(propertyInfo.Property.CanWrite == false)
+                {
+                    EditorGUILayout.LabelField(propertyInfo.Property.Name, "");
+                }
+                else
+                {
+                    // draw property
+                }
             }
+        }
+
+
+
+        private static void Warn(string message)
+        {
+            Debug.LogWarning("[Inspection] " + message);
         }
 
 

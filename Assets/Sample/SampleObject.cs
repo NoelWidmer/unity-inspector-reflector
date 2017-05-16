@@ -2,15 +2,34 @@
 
 namespace InspectorReflector.Sample
 {
-    public class SampleObject : MonoBehaviour, IInspectable
+    [Inspect]
+    public class SampleObject : MonoBehaviour
     {
-        [Inspect]
-        public int IntField;
-
         [Inspect]
         public int IntProperty
         {
             get; set;
+        }
+
+
+
+        [Inspect]
+        public int ReadonlyProperty
+        {
+            get
+            {
+                return 3;
+            }
+        }
+
+
+        [Inspect]
+        public int WriteonlyProperty
+        {
+            set
+            {
+                
+            }
         }
     }
 }
