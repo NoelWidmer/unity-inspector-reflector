@@ -22,8 +22,8 @@ namespace InspectorReflector.Sample
             }
         }
 
+        
 
-        [Inspect]
         public int WriteonlyProperty
         {
             set

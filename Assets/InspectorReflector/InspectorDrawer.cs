@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +8,19 @@ namespace InspectorReflector
 {
     public class InspectorDrawer
     {
+        public readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawLookup;
+
+
+
+        public InspectorDrawer()
+        {
+            _drawLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
+
+            _drawLookup.Add(typeof(int).AssemblyQualifiedName, DrawInt);
+        }
+
+
+
         public bool ShouldReflectInspector(object obj)
         {
             object[] attributes = obj.GetType().GetCustomAttributes(typeof(InspectAttribute), true);
@@ -82,12 +96,12 @@ namespace InspectorReflector
             if(inspectableProperties.Count == 0)
                 return;
 
-            DrawInspectableProperties(inspectableProperties);
+            DrawProperties(obj, inspectableProperties);
         }
 
 
 
-        private void DrawInspectableProperties(List<PropertyAndInspectAttribute> propertyInfos)
+        private void DrawProperties(object obj, List<PropertyAndInspectAttribute> propertyInfos)
         {
             foreach(var propertyInfo in propertyInfos)
             {
@@ -97,13 +111,61 @@ namespace InspectorReflector
                 }
                 else if(propertyInfo.Property.CanWrite == false)
                 {
-                    EditorGUILayout.LabelField(propertyInfo.Property.Name, "");
+                    EditorGUILayout.LabelField(propertyInfo.Property.Name, propertyInfo.Property.GetValue(obj, null).ToString());
                 }
                 else
                 {
-                    // draw property
+                    object valueOrRef = propertyInfo.Property.GetValue(obj, null);
+
+                    if(valueOrRef.GetType().IsValueType)
+                    {
+                        valueOrRef = DrawValue(propertyInfo, valueOrRef);
+                    }
+                    else
+                    {
+                        valueOrRef = DrawValue(propertyInfo, valueOrRef);
+                    }
+
+                    propertyInfo.Property.SetValue(obj, valueOrRef, null);
                 }
             }
+        }
+
+
+
+        private object DrawValue(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            string aqtn = value.GetType().AssemblyQualifiedName;
+
+            Func<PropertyAndInspectAttribute, object, object> draw;
+            if(_drawLookup.TryGetValue(aqtn, out draw))
+            {
+                return draw(propertyInfo, value);
+            }
+            else
+            {
+                EditorGUILayout.LabelField("The following value type has noo drawer: " + aqtn);
+                return null;
+            }
+        }
+
+
+
+        #region Value type Drawers
+
+        private object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            return EditorGUILayout.IntField(propertyInfo.Property.Name, (int)value);
+        }
+
+        #endregion
+
+
+
+        private object DrawReference(PropertyAndInspectAttribute propertyInfo, object reference)
+        {
+            EditorGUILayout.LabelField("Reflected reference types are not yet supported.");
+            return null;
         }
 
 
