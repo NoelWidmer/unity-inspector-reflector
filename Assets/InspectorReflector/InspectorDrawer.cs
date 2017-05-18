@@ -8,24 +8,49 @@ namespace InspectorReflector
 {
     public class InspectorDrawer
     {
-        public readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawLookup;
+        public static readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawLookup;
 
 
 
-        public InspectorDrawer()
+        static InspectorDrawer()
         {
             _drawLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
 
-            _drawLookup.Add(typeof(int).AssemblyQualifiedName, DrawInt);
+            //TODO register more type drawers.
+            RegisterDrawer<int>(DrawInt);
         }
 
 
 
-        public bool ShouldReflectInspector(object obj)
+        public static void RegisterDrawer<T>(Func<PropertyAndInspectAttribute, object, object> drawer, bool overwrite = false)
         {
-            object[] attributes = obj.GetType().GetCustomAttributes(typeof(InspectAttribute), true);
+            if(drawer == null)
+                throw new ArgumentNullException("drawer");
 
-            if(attributes == null)
+            string aqtn = typeof(T).AssemblyQualifiedName;
+
+            if(_drawLookup.ContainsKey(aqtn))
+            {
+                if(overwrite == false)
+                    throw new InvalidOperationException("A drawer for the following type has already been registered: " + typeof(T).FullName);
+
+                _drawLookup.Remove(aqtn);
+            }
+
+            _drawLookup.Add(aqtn, drawer);
+        }
+
+
+
+        public bool ShouldReflectInspector(object target)
+        {
+            if(target == null)
+                throw new ArgumentNullException("target");
+
+            //TODO need better way to recognize inspectable types.
+            object[] attributes = target.GetType().GetCustomAttributes(typeof(InspectAttribute), true);
+
+            if(attributes == null || attributes.Length == 0)
             {
                 return false;
             }
@@ -35,20 +60,23 @@ namespace InspectorReflector
             }
             else
             {
-                Warn("Found multiple attributes of type " + typeof(InspectAttribute).Name + " on " + obj.GetType().FullName);
+                Warn("Found multiple attributes of type " + typeof(InspectAttribute).Name + " on " + target.GetType().FullName);
                 return false;
             }
         }
 
 
 
-        public void DrawReflectedInspector(object obj)
+        public void ReflectInspector(object target)
         {
+            if(target == null)
+                throw new ArgumentNullException("target");
+
             PropertyInfo[] publicInstanceProperties;
             {
                 BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
-                publicInstanceProperties = obj.GetType().GetProperties(flags);
+                publicInstanceProperties = target.GetType().GetProperties(flags);
 
                 if(publicInstanceProperties == null || publicInstanceProperties.Length == 0)
                     return;
@@ -77,6 +105,7 @@ namespace InspectorReflector
 
                 foreach(var property in nonIndexedPropoerties)
                 {
+                    //TODO need better way to recognize inspectable properties.
                     object[] attributes = property.GetCustomAttributes(typeof(InspectAttribute), true);
 
                     if(attributes != null)
@@ -96,26 +125,26 @@ namespace InspectorReflector
             if(inspectableProperties.Count == 0)
                 return;
 
-            DrawProperties(obj, inspectableProperties);
+            DrawProperties(target, inspectableProperties);
         }
 
 
 
-        private void DrawProperties(object obj, List<PropertyAndInspectAttribute> propertyInfos)
+        private void DrawProperties(object target, List<PropertyAndInspectAttribute> propertyInfos)
         {
             foreach(var propertyInfo in propertyInfos)
             {
-                if(propertyInfo.Property.CanRead == false)
+                if(propertyInfo.PropertyInfo.CanRead == false)
                 {
-                    Warn("The following property cannot be read from: " + propertyInfo.Property.DeclaringType.FullName + "." + propertyInfo.Property.Name);
+                    Warn("The following property cannot be read from: " + propertyInfo.PropertyInfo.DeclaringType.FullName + "." + propertyInfo.PropertyInfo.Name);
                 }
-                else if(propertyInfo.Property.CanWrite == false)
+                else if(propertyInfo.PropertyInfo.CanWrite == false)
                 {
-                    EditorGUILayout.LabelField(propertyInfo.Property.Name, propertyInfo.Property.GetValue(obj, null).ToString());
+                    EditorGUILayout.LabelField(propertyInfo.PropertyInfo.Name, propertyInfo.PropertyInfo.GetValue(target, null).ToString());
                 }
                 else
                 {
-                    object valueOrRef = propertyInfo.Property.GetValue(obj, null);
+                    object valueOrRef = propertyInfo.PropertyInfo.GetValue(target, null);
 
                     if(valueOrRef.GetType().IsValueType)
                     {
@@ -126,7 +155,7 @@ namespace InspectorReflector
                         valueOrRef = DrawValue(propertyInfo, valueOrRef);
                     }
 
-                    propertyInfo.Property.SetValue(obj, valueOrRef, null);
+                    propertyInfo.PropertyInfo.SetValue(target, valueOrRef, null);
                 }
             }
         }
@@ -153,9 +182,9 @@ namespace InspectorReflector
 
         #region Value type Drawers
 
-        private object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
+        private static object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            return EditorGUILayout.IntField(propertyInfo.Property.Name, (int)value);
+            return EditorGUILayout.IntField(propertyInfo.PropertyInfo.Name, (int)value);
         }
 
         #endregion
@@ -164,6 +193,7 @@ namespace InspectorReflector
 
         private object DrawReference(PropertyAndInspectAttribute propertyInfo, object reference)
         {
+            //TODO inspect reflected types.
             EditorGUILayout.LabelField("Reflected reference types are not yet supported.");
             return null;
         }

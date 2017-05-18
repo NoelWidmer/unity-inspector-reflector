@@ -16,7 +16,7 @@ namespace InspectorReflector
 
             if(drawer.ShouldReflectInspector(obj))
             {
-                drawer.DrawReflectedInspector(obj);
+                drawer.ReflectInspector(obj);
             }
             else
             {
