@@ -8,16 +8,27 @@ namespace InspectorReflector
 {
     public class InspectorDrawer
     {
-        public static readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawLookup;
+        public static readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawersLookup;
 
 
 
         static InspectorDrawer()
         {
-            _drawLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
+            _drawersLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
 
             //TODO register more type drawers.
-            RegisterDrawer<int>(DrawInt);
+            RegisterDrawer<Bounds>(DefaultDrawers.DrawBounds);
+            RegisterDrawer<Color>(DefaultDrawers.DrawColor);
+            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawCurve);
+            RegisterDrawer<double>(DefaultDrawers.DrawDouble);
+            RegisterDrawer<float>(DefaultDrawers.DrawFloat);
+            RegisterDrawer<int>(DefaultDrawers.DrawInt);
+            RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
+            RegisterDrawer<string>(DefaultDrawers.DrawText);
+            RegisterDrawer<bool>(DefaultDrawers.DrawToggle);
+            RegisterDrawer<Vector2>(DefaultDrawers.DrawVector2);
+            RegisterDrawer<Vector3>(DefaultDrawers.DrawVector3);
+            RegisterDrawer<Vector4>(DefaultDrawers.DrawVector4);
         }
 
 
@@ -29,15 +40,15 @@ namespace InspectorReflector
 
             string aqtn = typeof(T).AssemblyQualifiedName;
 
-            if(_drawLookup.ContainsKey(aqtn))
+            if(_drawersLookup.ContainsKey(aqtn))
             {
                 if(overwrite == false)
                     throw new InvalidOperationException("A drawer for the following type has already been registered: " + typeof(T).FullName);
 
-                _drawLookup.Remove(aqtn);
+                _drawersLookup.Remove(aqtn);
             }
 
-            _drawLookup.Add(aqtn, drawer);
+            _drawersLookup.Add(aqtn, drawer);
         }
 
 
@@ -145,14 +156,14 @@ namespace InspectorReflector
                 else
                 {
                     object valueOrRef = propertyInfo.PropertyInfo.GetValue(target, null);
-
-                    if(valueOrRef.GetType().IsValueType)
+                    
+                    if(valueOrRef != null && valueOrRef.GetType().IsValueType)
                     {
                         valueOrRef = DrawValue(propertyInfo, valueOrRef);
                     }
                     else
                     {
-                        valueOrRef = DrawValue(propertyInfo, valueOrRef);
+                        valueOrRef = DefaultDrawers.DrawReference(propertyInfo, valueOrRef);
                     }
 
                     propertyInfo.PropertyInfo.SetValue(target, valueOrRef, null);
@@ -167,7 +178,7 @@ namespace InspectorReflector
             string aqtn = value.GetType().AssemblyQualifiedName;
 
             Func<PropertyAndInspectAttribute, object, object> draw;
-            if(_drawLookup.TryGetValue(aqtn, out draw))
+            if(_drawersLookup.TryGetValue(aqtn, out draw))
             {
                 return draw(propertyInfo, value);
             }
@@ -176,26 +187,6 @@ namespace InspectorReflector
                 EditorGUILayout.LabelField("The following value type has noo drawer: " + aqtn);
                 return null;
             }
-        }
-
-
-
-        #region Value type Drawers
-
-        private static object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
-        {
-            return EditorGUILayout.IntField(propertyInfo.PropertyInfo.Name, (int)value);
-        }
-
-        #endregion
-
-
-
-        private object DrawReference(PropertyAndInspectAttribute propertyInfo, object reference)
-        {
-            //TODO inspect reflected types.
-            EditorGUILayout.LabelField("Reflected reference types are not yet supported.");
-            return null;
         }
 
 
