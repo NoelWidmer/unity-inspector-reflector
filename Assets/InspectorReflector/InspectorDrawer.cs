@@ -8,6 +8,8 @@ namespace InspectorReflector
 {
     public class InspectorDrawer
     {
+        #region Static
+
         public static readonly Dictionary<string, Func<PropertyAndInspectAttribute, object, object>> _drawersLookup;
 
 
@@ -52,6 +54,8 @@ namespace InspectorReflector
             _drawersLookup.Add(aqtn, drawer);
         }
 
+        #endregion
+
 
 
         public bool ShouldReflectInspector(object target)
@@ -79,7 +83,7 @@ namespace InspectorReflector
 
 
 
-        public void ReflectInspector(object target)
+        public void ReflectInspector(object target, TransientData transientData)
         {
             if(target == null)
                 throw new ArgumentNullException("target");
@@ -137,12 +141,12 @@ namespace InspectorReflector
             if(properties.Count == 0)
                 return;
 
-            DrawProperties(target, properties);
+            DrawProperties(target, properties, transientData);
         }
 
 
 
-        private void DrawProperties(object target, List<PropertyAndInspectAttribute> properties)
+        private void DrawProperties(object target, List<PropertyAndInspectAttribute> properties, TransientData transientData)
         {
             foreach(var property in properties)
             {
@@ -158,10 +162,9 @@ namespace InspectorReflector
                 }
                 else
                 {
+                    string aqtn = propertyInfo.PropertyType.AssemblyQualifiedName;
                     object origValueOrRef = propertyInfo.GetValue(target, null);
                     object newValueOrRef;
-
-                    string aqtn = propertyInfo.PropertyType.AssemblyQualifiedName;
 
                     Func<PropertyAndInspectAttribute, object, object> drawer;
                     if(_drawersLookup.TryGetValue(aqtn, out drawer))
@@ -185,7 +188,7 @@ namespace InspectorReflector
                         }
                         else
                         {
-                            newValueOrRef = DrawReferenceOrBoxedNull(property, origValueOrRef);
+                            newValueOrRef = DrawReference(property, origValueOrRef, transientData);
                         }
                     }
 
@@ -197,7 +200,7 @@ namespace InspectorReflector
 
 
 
-        private object DrawReferenceOrBoxedNull(PropertyAndInspectAttribute property, object reference)
+        private object DrawReference(PropertyAndInspectAttribute property, object reference, TransientData transientData)
         {
             if(reference == null)
             {
