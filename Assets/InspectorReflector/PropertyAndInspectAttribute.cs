@@ -5,19 +5,19 @@ namespace InspectorReflector
 {
     public class PropertyAndInspectAttribute
     {
-        public PropertyAndInspectAttribute(PropertyInfo propertyInfo, InspectAttribute inspectAttribute)
+        public PropertyAndInspectAttribute(PropertyInfo info, InspectAttribute inspectAttribute)
         {
-            if(propertyInfo == null)
-                throw new ArgumentNullException("propertyInfo");
+            if(info == null)
+                throw new ArgumentNullException("info");
 
             if(inspectAttribute == null)
                 throw new ArgumentNullException("inspectAttribute");
 
-            PropertyInfo = propertyInfo;
+            Info = info;
             InspectAttribute = inspectAttribute;
         }
 
-        public PropertyInfo PropertyInfo
+        public PropertyInfo Info
         {
             get;
             private set;

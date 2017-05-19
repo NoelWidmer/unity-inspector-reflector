@@ -35,9 +35,6 @@ namespace InspectorReflector
 
         public static void RegisterDrawer<T>(Func<PropertyAndInspectAttribute, object, object> drawer, bool overwrite = false)
         {
-            if(drawer == null)
-                throw new ArgumentNullException("drawer");
-
             string aqtn = typeof(T).AssemblyQualifiedName;
 
             if(_drawersLookup.ContainsKey(aqtn))
@@ -45,8 +42,12 @@ namespace InspectorReflector
                 if(overwrite == false)
                     throw new InvalidOperationException("A drawer for the following type has already been registered: " + typeof(T).FullName);
 
-                _drawersLookup.Remove(aqtn);
+                if(drawer != null)
+                    _drawersLookup.Remove(aqtn);
             }
+
+            if(drawer == null)
+                throw new ArgumentNullException("drawer");
 
             _drawersLookup.Add(aqtn, drawer);
         }
@@ -59,7 +60,7 @@ namespace InspectorReflector
                 throw new ArgumentNullException("target");
 
             //TODO need better way to recognize inspectable types.
-            object[] attributes = target.GetType().GetCustomAttributes(typeof(InspectAttribute), true);
+            object[] attributes = target.GetType().GetCustomAttributes(typeof(InspectAttribute), false);
 
             if(attributes == null || attributes.Length == 0)
             {
@@ -93,28 +94,28 @@ namespace InspectorReflector
                     return;
             }
 
-            List<PropertyInfo> nonIndexedPropoerties;
+            List<PropertyInfo> nonIndexedProperties;
             {
-                nonIndexedPropoerties = new List<PropertyInfo>();
+                nonIndexedProperties = new List<PropertyInfo>();
 
                 foreach(var property in publicInstanceProperties)
                 {
                     ParameterInfo[] paramInfos = property.GetIndexParameters();
 
                     if(paramInfos == null || paramInfos.Length == 0)
-                        nonIndexedPropoerties.Add(property);
+                        nonIndexedProperties.Add(property);
                 }
 
-                if(nonIndexedPropoerties == null || nonIndexedPropoerties.Count == 0)
+                if(nonIndexedProperties == null || nonIndexedProperties.Count == 0)
                     return;
             }
 
 
-            List<PropertyAndInspectAttribute> inspectableProperties;
+            List<PropertyAndInspectAttribute> properties;
             {
-                inspectableProperties = new List<PropertyAndInspectAttribute>();
+                properties = new List<PropertyAndInspectAttribute>();
 
-                foreach(var property in nonIndexedPropoerties)
+                foreach(var property in nonIndexedProperties)
                 {
                     //TODO need better way to recognize inspectable properties.
                     object[] attributes = property.GetCustomAttributes(typeof(InspectAttribute), true);
@@ -123,7 +124,7 @@ namespace InspectorReflector
                     {
                         if(attributes.Length == 1)
                         {
-                            inspectableProperties.Add(new PropertyAndInspectAttribute(property, (InspectAttribute)attributes[0]));
+                            properties.Add(new PropertyAndInspectAttribute(property, (InspectAttribute)attributes[0]));
                         }
                         else if(attributes.Length == 2)
                         {
@@ -133,60 +134,106 @@ namespace InspectorReflector
                 }
             }
 
-            if(inspectableProperties.Count == 0)
+            if(properties.Count == 0)
                 return;
 
-            DrawProperties(target, inspectableProperties);
+            DrawProperties(target, properties);
         }
 
 
 
-        private void DrawProperties(object target, List<PropertyAndInspectAttribute> propertyInfos)
+        private void DrawProperties(object target, List<PropertyAndInspectAttribute> properties)
         {
-            foreach(var propertyInfo in propertyInfos)
+            foreach(var property in properties)
             {
-                if(propertyInfo.PropertyInfo.CanRead == false)
+                PropertyInfo propertyInfo = property.Info;
+
+                if(propertyInfo.CanRead == false)
                 {
-                    Warn("The following property cannot be read from: " + propertyInfo.PropertyInfo.DeclaringType.FullName + "." + propertyInfo.PropertyInfo.Name);
+                    Warn("The following property cannot be read from: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
                 }
-                else if(propertyInfo.PropertyInfo.CanWrite == false)
+                else if(propertyInfo.CanWrite == false)
                 {
-                    EditorGUILayout.LabelField(propertyInfo.PropertyInfo.Name, propertyInfo.PropertyInfo.GetValue(target, null).ToString());
+                    EditorGUILayout.LabelField(propertyInfo.Name, propertyInfo.GetValue(target, null).ToString());
                 }
                 else
                 {
-                    object valueOrRef = propertyInfo.PropertyInfo.GetValue(target, null);
-                    
-                    if(valueOrRef != null && valueOrRef.GetType().IsValueType)
+                    object origValueOrRef = propertyInfo.GetValue(target, null);
+                    object newValueOrRef;
+
+                    string aqtn = propertyInfo.PropertyType.AssemblyQualifiedName;
+
+                    Func<PropertyAndInspectAttribute, object, object> drawer;
+                    if(_drawersLookup.TryGetValue(aqtn, out drawer))
                     {
-                        valueOrRef = DrawValue(propertyInfo, valueOrRef);
+                        if(origValueOrRef != null)
+                        {
+                            newValueOrRef = drawer(property, origValueOrRef);
+                        }
+                        else
+                        {
+                            DrawNull(property.Info.Name);
+                            continue;
+                        }
                     }
                     else
                     {
-                        valueOrRef = DefaultDrawers.DrawReference(propertyInfo, valueOrRef);
+                        if(origValueOrRef != null && propertyInfo.PropertyType.IsValueType)
+                        {
+                            Warn("The following value-type has no drawer: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
+                            continue;
+                        }
+                        else
+                        {
+                            newValueOrRef = DrawReferenceOrBoxedNull(property, origValueOrRef);
+                        }
                     }
 
-                    propertyInfo.PropertyInfo.SetValue(target, valueOrRef, null);
+                    if(origValueOrRef != newValueOrRef)
+                        propertyInfo.SetValue(target, newValueOrRef, null);
                 }
             }
         }
 
 
 
-        private object DrawValue(PropertyAndInspectAttribute propertyInfo, object value)
+        private object DrawReferenceOrBoxedNull(PropertyAndInspectAttribute property, object reference)
         {
-            string aqtn = value.GetType().AssemblyQualifiedName;
-
-            Func<PropertyAndInspectAttribute, object, object> draw;
-            if(_drawersLookup.TryGetValue(aqtn, out draw))
+            if(reference == null)
             {
-                return draw(propertyInfo, value);
+                DrawNull(property.Info.Name);
             }
             else
             {
-                EditorGUILayout.LabelField("The following value type has noo drawer: " + aqtn);
-                return null;
+                bool show = true;
+
+                if(reference is UnityEngine.Object)
+                {
+                    show = EditorGUILayout.InspectorTitlebar(show, (UnityEngine.Object)reference);
+                }
+                else
+                {
+                    show = EditorGUILayout.Foldout(show, property.Info.PropertyType.Name);
+                }
+
+                if(show)
+                {
+                    EditorGUILayout.LabelField("test");
+                }
             }
+
+            //TODO inspect reflected types.
+            return null;
+        }
+
+
+
+        private void DrawNull(string propertyName)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(propertyName);
+            EditorGUILayout.LabelField("Not set");
+            EditorGUILayout.EndHorizontal();
         }
 
 
