@@ -27,6 +27,7 @@ namespace InspectorReflector
             RegisterDrawer<double>(DefaultDrawers.DrawDouble);
             RegisterDrawer<float>(DefaultDrawers.DrawFloat);
             RegisterDrawer<int>(DefaultDrawers.DrawInt);
+            RegisterDrawer<long>(DefaultDrawers.DrawLong);
             RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
             RegisterDrawer<string>(DefaultDrawers.DrawText);
             RegisterDrawer<bool>(DefaultDrawers.DrawToggle);

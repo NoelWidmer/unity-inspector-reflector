@@ -19,6 +19,8 @@ namespace InspectorReflector.Sample
         [Inspect]
         public int IntProperty { get; set; }
         [Inspect]
+        public long LongProperty { get; set; }
+        [Inspect]
         public Rect RectProperty { get; set; }
         [Inspect]
         public string StringProperty { get; set; }
