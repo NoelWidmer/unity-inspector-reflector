@@ -1,29 +1,32 @@
 ﻿ using UnityEngine;
 
-[Inspect]
-public class StringSample : MonoBehaviour
+namespace InspectorReflector.Sample
 {
-    [InspectString(StringInspectionType.Field)]
-    public string Field
+    [Inspect]
+    public class StringSample : MonoBehaviour
     {
-        get; set;
-    }
+        [InspectString(StringInspectionType.Field)]
+        public string Field
+        {
+            get; set;
+        }
 
-    [InspectString(StringInspectionType.DelayedField)]
-    public string DelayedField
-    {
-        get; set;
-    }
+        [InspectString(StringInspectionType.DelayedField)]
+        public string DelayedField
+        {
+            get; set;
+        }
 
-    [InspectString(StringInspectionType.Tag)]
-    public string Tag
-    {
-        get; set;
-    }
+        [InspectString(StringInspectionType.Tag)]
+        public string Tag
+        {
+            get; set;
+        }
 
-    [InspectString(StringInspectionType.Area)]
-    public string Area
-    {
-        get; set;
+        [InspectString(StringInspectionType.Area)]
+        public string Area
+        {
+            get; set;
+        }
     }
 }

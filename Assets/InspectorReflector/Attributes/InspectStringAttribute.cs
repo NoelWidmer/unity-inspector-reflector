@@ -1,5 +1,8 @@
-﻿namespace UnityEngine
+﻿using System;
+
+namespace UnityEngine
 {
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class InspectStringAttribute : InspectAttribute
     {
         private readonly StringInspectionType _inspectionType;

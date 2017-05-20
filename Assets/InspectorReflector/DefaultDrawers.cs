@@ -42,6 +42,18 @@ namespace InspectorReflector
 
         public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
         {
+            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectDoubleAttribute), false);
+
+            if(attr != null && attr.Length == 1)
+            {
+                var doubleAttr = (InspectDoubleAttribute)attr[0];
+                switch(doubleAttr.InspectionType)
+                {
+                    case DoubleInspectionType.DelayedField:
+                        return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
+                }
+            }
+
             return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
         }
 
