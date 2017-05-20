@@ -168,7 +168,7 @@ namespace InspectorReflector
                 {
                     Warn("The following property cannot be read from: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
                 }
-                else if(propertyInfo.CanWrite == false)
+                else if(propertyInfo.CanWrite == false || property.InspectAttribute.InspectAsReadonly)
                 {
                     EditorGUILayout.LabelField(propertyInfo.Name, propertyInfo.GetValue(target, null).ToString());
                 }

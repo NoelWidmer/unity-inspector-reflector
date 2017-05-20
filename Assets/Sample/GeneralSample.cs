@@ -18,6 +18,8 @@ namespace InspectorReflector.Sample
         public long LongProperty { get; set; }
         [Inspect]
         public Rect RectProperty { get; set; }
+        [Inspect(true)]
+        public Rect RectPropertyReadonly { get; set; }
         [Inspect]
         public bool BoolProperty { get; set; }
         [Inspect]
