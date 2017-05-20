@@ -58,6 +58,11 @@ namespace InspectorReflector
 
 
 
+        private Stack<string> _propertyPath = new Stack<string>();
+        private TransientData _transientData;
+
+
+
         public bool ShouldReflectInspector(object target)
         {
             if(target == null)
@@ -141,16 +146,20 @@ namespace InspectorReflector
             if(properties.Count == 0)
                 return;
 
-            DrawProperties(target, properties, transientData);
+            _transientData = transientData;
+            DrawProperties(target, properties);
         }
 
 
 
-        private void DrawProperties(object target, List<PropertyAndInspectAttribute> properties, TransientData transientData)
+        private void DrawProperties(object target, List<PropertyAndInspectAttribute> properties)
         {
+            _propertyPath.Clear();
+
             foreach(var property in properties)
             {
                 PropertyInfo propertyInfo = property.Info;
+                _propertyPath.Push(propertyInfo.Name);
 
                 if(propertyInfo.CanRead == false)
                 {
@@ -176,7 +185,7 @@ namespace InspectorReflector
                         else
                         {
                             DrawNull(property.Info.Name);
-                            continue;
+                            newValueOrRef = origValueOrRef;
                         }
                     }
                     else
@@ -184,23 +193,25 @@ namespace InspectorReflector
                         if(origValueOrRef != null && propertyInfo.PropertyType.IsValueType)
                         {
                             Warn("The following value-type has no drawer: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
-                            continue;
+                            newValueOrRef = origValueOrRef;
                         }
                         else
                         {
-                            newValueOrRef = DrawReference(property, origValueOrRef, transientData);
+                            newValueOrRef = DrawReference(property, origValueOrRef);
                         }
                     }
 
                     if(origValueOrRef != newValueOrRef)
                         propertyInfo.SetValue(target, newValueOrRef, null);
                 }
+
+                _propertyPath.Pop();
             }
         }
 
 
 
-        private object DrawReference(PropertyAndInspectAttribute property, object reference, TransientData transientData)
+        private object DrawReference(PropertyAndInspectAttribute property, object reference)
         {
             if(reference == null)
             {
@@ -233,10 +244,7 @@ namespace InspectorReflector
 
         private void DrawNull(string propertyName)
         {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(propertyName);
-            EditorGUILayout.LabelField("Not set");
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField(propertyName, "Not set");
         }
 
 
