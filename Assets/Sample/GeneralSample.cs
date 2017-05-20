@@ -4,7 +4,7 @@ using UnityEngine;
 namespace InspectorReflector.Sample
 {
     [Inspect]
-    public class SampleObject : MonoBehaviour
+    public class GeneralSample : MonoBehaviour
     {
         [Inspect]
         public Bounds BoundsProperty { get; set; }

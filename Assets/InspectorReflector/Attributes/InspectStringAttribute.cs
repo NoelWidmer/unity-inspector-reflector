@@ -24,7 +24,6 @@
     {
         Field, 
         DelayedField, 
-        ReadonlySelectable, 
         Tag, 
         Area
     }

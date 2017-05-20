@@ -29,7 +29,7 @@ namespace InspectorReflector
             RegisterDrawer<int>(DefaultDrawers.DrawInt);
             RegisterDrawer<long>(DefaultDrawers.DrawLong);
             RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
-            RegisterDrawer<string>(DefaultDrawers.DrawText);
+            RegisterDrawer<string>(DefaultDrawers.DrawString);
             RegisterDrawer<bool>(DefaultDrawers.DrawToggle);
             RegisterDrawer<Vector2>(DefaultDrawers.DrawVector2);
             RegisterDrawer<Vector3>(DefaultDrawers.DrawVector3);
@@ -188,7 +188,8 @@ namespace InspectorReflector
 
                         if(_drawersLookup.TryGetValue(aqtn, out drawer))
                         {
-                            if(origValueOrRef != null)
+                            //TODO better null checking (string)
+                            if(origValueOrRef != null || propertyInfo.PropertyType == typeof(string))
                             {
                                 newValueOrRef = drawer(property, origValueOrRef);
                             }
