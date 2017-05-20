@@ -13,8 +13,6 @@ namespace InspectorReflector.Sample
         [Inspect]
         public AnimationCurve CurveProperty { get; set; }
         [Inspect]
-        public float FloatProperty { get; set; }
-        [Inspect]
         public int IntProperty { get; set; }
         [Inspect]
         public long LongProperty { get; set; }

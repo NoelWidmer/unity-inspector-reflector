@@ -59,6 +59,18 @@ namespace InspectorReflector
 
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
+            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectFloatAttribute), false);
+
+            if(attr != null && attr.Length == 1)
+            {
+                var floatAttr = (InspectFloatAttribute)attr[0];
+                switch(floatAttr.InspectionType)
+                {
+                    case FloatInspectionType.DelayedField:
+                        return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
+                }
+            }
+
             return EditorGUILayout.FloatField(propertyInfo.Info.Name, (float)value);
         }
 
