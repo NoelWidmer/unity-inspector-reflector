@@ -1,10 +1,30 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace InspectorReflector
 {
     public static class DefaultDrawers
     {
+        public static object DrawEnum(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            var flagAttrs = propertyInfo.Info.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false);
+
+            if(flagAttrs == null || flagAttrs.Length == 0)
+            {
+                return EditorGUILayout.EnumPopup(propertyInfo.Info.Name, (Enum)value);
+            }
+            else if(flagAttrs.Length == 1)
+            {
+                return EditorGUILayout.EnumMaskField(propertyInfo.Info.Name, (Enum)value);
+            }
+            else
+            {
+                Debug.LogWarning("Multiple attributes of type " + typeof(FlagsAttribute).FullName + " found for enum of type " + propertyInfo.Info.PropertyType.FullName);
+                return value;
+            }
+        }
+
         public static object DrawBounds(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.BoundsField(propertyInfo.Info.Name, (Bounds)value);

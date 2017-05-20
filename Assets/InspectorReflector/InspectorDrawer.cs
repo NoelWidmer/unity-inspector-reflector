@@ -18,6 +18,8 @@ namespace InspectorReflector
         {
             _drawersLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
 
+            _drawersLookup.Add("$", DefaultDrawers.DrawEnum);
+
             //TODO register more type drawers.
             RegisterDrawer<Bounds>(DefaultDrawers.DrawBounds);
             RegisterDrawer<Color>(DefaultDrawers.DrawColor);
@@ -171,33 +173,41 @@ namespace InspectorReflector
                 }
                 else
                 {
-                    string aqtn = propertyInfo.PropertyType.AssemblyQualifiedName;
+                    Func<PropertyAndInspectAttribute, object, object> drawer;
                     object origValueOrRef = propertyInfo.GetValue(target, null);
                     object newValueOrRef;
 
-                    Func<PropertyAndInspectAttribute, object, object> drawer;
-                    if(_drawersLookup.TryGetValue(aqtn, out drawer))
+                    if(propertyInfo.PropertyType.IsEnum)
                     {
-                        if(origValueOrRef != null)
-                        {
-                            newValueOrRef = drawer(property, origValueOrRef);
-                        }
-                        else
-                        {
-                            DrawNull(property.Info.Name);
-                            newValueOrRef = origValueOrRef;
-                        }
+                        newValueOrRef = _drawersLookup["$"](property, origValueOrRef);
                     }
                     else
                     {
-                        if(origValueOrRef != null && propertyInfo.PropertyType.IsValueType)
+                        string aqtn = propertyInfo.PropertyType.AssemblyQualifiedName;
+
+                        if(_drawersLookup.TryGetValue(aqtn, out drawer))
                         {
-                            Warn("The following value-type has no drawer: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
-                            newValueOrRef = origValueOrRef;
+                            if(origValueOrRef != null)
+                            {
+                                newValueOrRef = drawer(property, origValueOrRef);
+                            }
+                            else
+                            {
+                                DrawNull(property.Info.Name);
+                                newValueOrRef = origValueOrRef;
+                            }
                         }
                         else
                         {
-                            newValueOrRef = DrawReference(property, origValueOrRef);
+                            if(origValueOrRef != null && propertyInfo.PropertyType.IsValueType)
+                            {
+                                Warn("The following value-type has no drawer: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
+                                newValueOrRef = origValueOrRef;
+                            }
+                            else
+                            {
+                                newValueOrRef = DrawReference(property, origValueOrRef);
+                            }
                         }
                     }
 
