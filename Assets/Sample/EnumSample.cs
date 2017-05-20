@@ -6,16 +6,34 @@ namespace InspectorReflector.Sample
     [Inspect]
     public class EnumSample : MonoBehaviour
     {
+        [SerializeField]
+        private TestEnum _testEnumProperty;
         [Inspect]
         public TestEnum TestEnumProperty
         {
-            get; set;
+            get
+            {
+                return _testEnumProperty;
+            }
+            set
+            {
+                _testEnumProperty = value;
+            }
         }
 
+        [SerializeField]
+        private TestFlags _testFlagsProperty;
         [Inspect]
         public TestFlags TestFlagsProperty
         {
-            get; set;
+            get
+            {
+                return _testFlagsProperty;
+            }
+            set
+            {
+                _testFlagsProperty = value;
+            }
         }
 
 

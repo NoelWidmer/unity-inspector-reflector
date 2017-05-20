@@ -152,6 +152,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d32fd4662240b4ea67671eb1b0f215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _boundsProperty:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  _colorProperty: {r: 0, g: 0, b: 0, a: 0}
+  _curveProperty:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _intProperty: 0
+  _longProperty: 0
+  _rectProperty:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  rectPropertyReadonly:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  _boolProperty: 0
+  _vector2Property: {x: 0, y: 0}
+  _vector3Property: {x: 0, y: 0, z: 0}
+  _vector4Property: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &270483694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,6 +206,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae8b5d8d4697fa14a97f2018b490d805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _field: 0
+  _delayedField: 0
 --- !u!114 &270483696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,6 +219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d938d9cf5c18ca4690e70ba9a8e9710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _field: 0
+  _delayedField: 0
 --- !u!114 &270483697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,3 +232,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b7350e33f43984478daceda2ce2ad69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _testEnumProperty: 0
+  _testFlagsProperty: 0
