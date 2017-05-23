@@ -1,5 +1,12 @@
 # Unity3D Inspector Reflector
 
+<!--http://doctoc.herokuapp.com/-->
+- [Introduction](#)
+- [Inspection](#)
+	- [Enabling the IR](#)
+	- [Customization](#)
+	- [Extensability](#)
+
 ## Introduction
 
 Unity wants us to work with their Inspector in a very specific way which is rather cumbersome and error-prone in my opinion. The fact that I have abandoned many of my Unity projects left my thinking. I came to the conclusion that the default Unity Inspector doesn't allow me to write code the way I want it to be. Unity therefore prevents me from writing in a truly expressive form, making me sort of angry, and abandoning my projects in the end.<br>
