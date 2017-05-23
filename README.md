@@ -14,3 +14,63 @@ Things that make me angry:<br>
    
 3) **Modification to the default Inspector forces us to write a complete custom Inspector.**<br>
    Sometimes it would be beneficial to display some data in a more refined way. I may want to group some values and collapse them visually. In order to change the visuals of the default Inspector Unity forces us to write a custom Inspector. A custom Inspector is sort of cool thing if I wouldn't have to write the logic for the complete type I want to inspect.
+
+## Inspection
+
+The IR (Inspector Reflector) is an opt-in feature which means that Unity still defaults to their cumbersome Inspector after you added the IR to the project - which is good. Built in types and types from third-party providers should not be targeted by the IR. However, if a third-party type was designed with the IR in mind you won't be able to correctly inspect the type without adding the IR to your project as well. 
+
+### Enabling the IR
+
+In order to enable the IR for a class it has to be marked with the <code>InspectAttribute</code>.
+
+```cs
+[Inspect]
+public class Enemy
+{
+```
+
+Such a class' public instance properties and fields can be inspected if they are also marked with the <code>InspectAttribute</code>. Note that the Unity Serializer is only able to serialize private fields marked with the <code>SerializeFieldAttribute</code> and public fields. You therefore cannot use automatically implemented properties because the invisible private backing field wouldn't be marked with the <code>SerializeFieldAttribute</code>.
+
+```cs
+   [SerializeField]
+   private int _exp;
+   [Inspect]
+   public int EXP
+   {
+      get
+      {
+         return _exp;
+      }
+      set
+      {
+         _exp = value;
+         _level = Mathf.Floor(value / 100f);
+      }
+   }
+   
+   
+   [SerializeField]
+   private int _level;
+   [Inspect]
+   public int Level
+   {
+      get
+      {
+         return _level;
+      }
+   }
+```
+
+Unity has some more specific restrictions on what kinds of data can be serialized.<br>
+Before using the IR you probably want to understand those restrictions first:<br>
+https://blogs.unity3d.com/2014/06/24/serialization-in-unity/
+
+```cs
+}
+```
+
+### Customization
+
+### Extensability
+
+Coming soon
