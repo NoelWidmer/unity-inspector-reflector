@@ -1,11 +1,12 @@
 # Unity3D Inspector Reflector
 
 <!--http://doctoc.herokuapp.com/-->
-- [Introduction](#)
-- [Inspection](#)
-	- [Enabling the IR](#)
-	- [Customization](#)
-	- [Extensability](#)
+- [Unity3D Inspector Reflector](#)
+	- [Introduction](#)
+	- [Inspection](#)
+		- [Enabling the IR](#)
+		- [Customization](#)
+		- [Extensability](#)
 
 ## Introduction
 
