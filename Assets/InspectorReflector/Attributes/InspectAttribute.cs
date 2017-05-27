@@ -5,7 +5,13 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
     public class InspectAttribute : Attribute
     {
-        private readonly InspectionType _inspectionType = InspectionType.Normal;
+        public readonly InspectionType InspectionType = InspectionType.Normal;
+
+        public readonly int? IntSliderMin = null;
+        public readonly int? IntSliderMax = null;
+
+        public readonly float? FloatSliderMin = null;
+        public readonly float? FloatSliderMax = null;
 
 
 
@@ -15,17 +21,19 @@ namespace UnityEngine
 
         public InspectAttribute(InspectionType inspectionType)
         {
-            _inspectionType = inspectionType;
+            InspectionType = inspectionType;
         }
 
-
-
-        public InspectionType InspectionType
+        public InspectAttribute(int sliderMin, int sliderMax)
         {
-            get
-            {
-                return _inspectionType;
-            }
+            IntSliderMin = sliderMin;
+            IntSliderMax = sliderMax;
+        }
+
+        public InspectAttribute(float sliderMin, float sliderMax)
+        {
+            FloatSliderMin = sliderMin;
+            FloatSliderMax = sliderMax;
         }
     }
 }

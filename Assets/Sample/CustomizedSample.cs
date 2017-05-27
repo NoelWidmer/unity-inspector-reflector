@@ -21,6 +21,21 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
+        private double _sliderDouble;
+        [Inspect(0f, 1f)]
+        public double SliderDouble
+        {
+            get
+            {
+                return _sliderDouble;
+            }
+            set
+            {
+                _sliderDouble = value;
+            }
+        }
+
+        [SerializeField]
         private float _delayedFloat;
         [Inspect(InspectionType.DelayedFloat)]
         public float DelayedFloat
@@ -32,6 +47,21 @@ namespace InspectorReflector.Sample
             set
             {
                 _delayedFloat = value;
+            }
+        }
+
+        [SerializeField]
+        private float _sliderFloat;
+        [Inspect(0f, 1f)]
+        public float SliderFloat
+        {
+            get
+            {
+                return _sliderFloat;
+            }
+            set
+            {
+                _sliderFloat = value;
             }
         }
 

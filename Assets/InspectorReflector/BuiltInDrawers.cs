@@ -51,13 +51,30 @@ namespace InspectorReflector
 
         public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            switch(propertyInfo.InspectAttribute.InspectionType)
+            if(propertyInfo.InspectAttribute.FloatSliderMax.HasValue)
             {
-                case InspectionType.DelayedDouble:
-                    return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
-            }
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
 
-            return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
+                float sliderMax = propertyInfo.InspectAttribute.FloatSliderMax.Value;
+                float sliderMin = propertyInfo.InspectAttribute.FloatSliderMin.Value;
+
+                float narrowedDouble = Convert.ToSingle((double)value);
+                float newValue = EditorGUILayout.Slider(narrowedDouble, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+                return (double)newValue;
+            }
+            else
+            {
+                switch(propertyInfo.InspectAttribute.InspectionType)
+                {
+                    case InspectionType.DelayedDouble:
+                        return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
+                }
+
+                return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
+            }
         }
 
         public static object DrawDropableObject(PropertyAndInspectAttribute propertyInfo, UnityEngine.Object value, bool allowSceneObjects)
@@ -99,13 +116,29 @@ namespace InspectorReflector
 
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            switch(propertyInfo.InspectAttribute.InspectionType)
+            if(propertyInfo.InspectAttribute.FloatSliderMax.HasValue)
             {
-                case InspectionType.DelayedFloat:
-                    return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
-            }
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
 
-            return EditorGUILayout.FloatField(propertyInfo.Info.Name, (float)value);
+                float sliderMax = propertyInfo.InspectAttribute.FloatSliderMax.Value;
+                float sliderMin = propertyInfo.InspectAttribute.FloatSliderMin.Value;
+
+                float newVal = EditorGUILayout.Slider((float)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+                return newVal;
+            }
+            else
+            {
+                switch(propertyInfo.InspectAttribute.InspectionType)
+                {
+                    case InspectionType.DelayedFloat:
+                        return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
+                }
+
+                return EditorGUILayout.FloatField(propertyInfo.Info.Name, (float)value);
+            }
         }
 
         public static object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)

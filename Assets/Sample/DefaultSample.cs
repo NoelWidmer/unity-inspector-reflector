@@ -125,9 +125,9 @@ namespace InspectorReflector.Sample
 
 
         [SerializeField]
-        private EnumNumbers _defaultEnum;
+        private Enum _defaultEnum;
         [Inspect]
-        public EnumNumbers DefaultEnum
+        public Enum DefaultEnum
         {
             get
             {
@@ -140,17 +140,17 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
-        private FlagNumbers _flagEnum;
+        private Flags _defaultFlagEnum;
         [Inspect]
-        public FlagNumbers FlagEnum
+        public Flags DefaultFlagEnum
         {
             get
             {
-                return _flagEnum;
+                return _defaultFlagEnum;
             }
             set
             {
-                _flagEnum = value;
+                _defaultFlagEnum = value;
             }
         }
 
@@ -235,6 +235,17 @@ namespace InspectorReflector.Sample
             set
             {
                 _defaultRect = value;
+            }
+        }
+
+        [SerializeField]
+        private Rect _defaultRectReadonlyByCode;
+        [Inspect]
+        public Rect DefaultRectReadonlyByCode
+        {
+            get
+            {
+                return _defaultRectReadonlyByCode;
             }
         }
 
@@ -392,26 +403,12 @@ namespace InspectorReflector.Sample
         }
 
 
-
-        // Readonly
-
-        [SerializeField]
-        private Rect _rectReadonlyByCode;
-        [Inspect]
-        public Rect RectReadonlyByCode
-        {
-            get
-            {
-                return _rectReadonlyByCode;
-            }
-        }
-
-
         
         // Nested types.
 
-        public enum EnumNumbers
+        public enum Enum
         {
+            Zero = 0, 
             One = 1,
             Two = 2,
             Three = 3,
@@ -420,7 +417,7 @@ namespace InspectorReflector.Sample
 
 
         [Flags]
-        public enum FlagNumbers
+        public enum Flags
         {
             One = 1,
             Two = 2,
