@@ -2,7 +2,7 @@
 
 <!--http://doctoc.herokuapp.com/-->
 - [Introduction](#introduction)
-	- [What is wrong with Unity's Inspector?](#what-is-wrong-with-unity's-default-inspector?)
+	- [What is wrong with Unity's Inspector?](#what-is-wrong-with-unitys-default-inspector)
 - [Inspection with the IR](#inspection-with-the-ir)
 	- [Enabling the IR](#enabling-the-ir)
 	- [Default Inspection](#default-inspection)
@@ -118,7 +118,8 @@ There are some exceptions to the behaviour explained in the table above:
 
 | Exception          | Visual Result                                                | 
 |:-------------------|:-------------------------------------------------------------|
-| Readonly Property  | The value displayed when inspecting a readonly property is the <code>string</code> returned by <br>the instance's <code>ToString()</code>.<br>![IRReadonlyProperty](./docs/IRReadonlyProperty.png)         |
+| Readonly Property  | The value displayed when inspecting a readonly property is the <code>string</code> returned by <br>the instance's <code>ToString()</code>:<br>![IRReadonlyProperty](./docs/IRReadonlyProperty.png)         |
+| Enums              | Enums are displayed by a dropdown menu allowing you to choose the instance's value:<br> ![IREnum](./docs/IREnum.png)<br>If the enum is marked with the <code>FlagsAttribute</code> then the dropdown allows you to select multiple values:<br> ![IRFlags](./docs/IRFlags.png)                 |
 
 ### Customized Inspection
 
