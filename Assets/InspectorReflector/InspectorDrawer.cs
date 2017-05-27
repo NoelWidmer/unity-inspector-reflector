@@ -21,16 +21,16 @@ namespace InspectorReflector
             _drawersLookup.Add("$", DefaultDrawers.DrawEnum);
 
             //TODO register more type drawers.
+            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawCurve);
+            RegisterDrawer<bool>(DefaultDrawers.DrawToggle);
             RegisterDrawer<Bounds>(DefaultDrawers.DrawBounds);
             RegisterDrawer<Color>(DefaultDrawers.DrawColor);
-            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawCurve);
             RegisterDrawer<double>(DefaultDrawers.DrawDouble);
             RegisterDrawer<float>(DefaultDrawers.DrawFloat);
             RegisterDrawer<int>(DefaultDrawers.DrawInt);
             RegisterDrawer<long>(DefaultDrawers.DrawLong);
             RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
             RegisterDrawer<string>(DefaultDrawers.DrawString);
-            RegisterDrawer<bool>(DefaultDrawers.DrawToggle);
             RegisterDrawer<Vector2>(DefaultDrawers.DrawVector2);
             RegisterDrawer<Vector3>(DefaultDrawers.DrawVector3);
             RegisterDrawer<Vector4>(DefaultDrawers.DrawVector4);
