@@ -85,6 +85,13 @@ namespace InspectorReflector
             }
         }
 
+        public static object DrawLayerMask(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+            int newValue = (EditorGUILayout.LayerField((LayerMask)value));
+            return (LayerMask)newValue;
+        }
+
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
             switch(propertyInfo.InspectAttribute.InspectionType)
@@ -98,6 +105,12 @@ namespace InspectorReflector
 
         public static object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
         {
+            switch(propertyInfo.InspectAttribute.InspectionType)
+            {
+                case InspectionType.DelayedInt:
+                    return EditorGUILayout.DelayedIntField(propertyInfo.Info.Name, (int)value);
+            }
+
             return EditorGUILayout.IntField(propertyInfo.Info.Name, (int)value);
         }
 

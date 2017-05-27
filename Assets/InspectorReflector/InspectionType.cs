@@ -6,6 +6,7 @@
     DropableObjectAllowSceneObjects,
     DelayedDouble, 
     DelayedFloat, 
+    DelayedInt, 
     DelayedString, 
     TagString, 
     AreaString

@@ -190,6 +190,23 @@ namespace InspectorReflector.Sample
 
 
         [SerializeField]
+        private LayerMask _defaultLayerMask;
+        [Inspect]
+        public LayerMask DefaultLayerMask
+        {
+            get
+            {
+                return _defaultLayerMask;
+            }
+            set
+            {
+                _defaultLayerMask = value;
+            }
+        }
+
+
+
+        [SerializeField]
         private long _defaultLong;
         [Inspect]
         public long DefaultLong

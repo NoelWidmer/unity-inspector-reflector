@@ -30,6 +30,7 @@ namespace InspectorReflector
             RegisterDrawer<double>(BuiltInDrawers.DrawDouble);
             RegisterDrawer<float>(BuiltInDrawers.DrawFloat);
             RegisterDrawer<int>(BuiltInDrawers.DrawInt);
+            RegisterDrawer<LayerMask>(BuiltInDrawers.DrawLayerMask);
             RegisterDrawer<long>(BuiltInDrawers.DrawLong);
             RegisterDrawer<Rect>(BuiltInDrawers.DrawRect);
             RegisterDrawer<sbyte>(BuiltInDrawers.DrawSByte);

@@ -34,7 +34,22 @@ namespace InspectorReflector.Sample
                 _delayedFloat = value;
             }
         }
-        
+
+        [SerializeField]
+        private int _delayedInt;
+        [Inspect(InspectionType.DelayedInt)]
+        public int DelayedInt
+        {
+            get
+            {
+                return _delayedInt;
+            }
+            set
+            {
+                _delayedInt = value;
+            }
+        }
+
         [SerializeField]
         private GameObject _dropableObject;
         [Inspect(InspectionType.DropableObject)]
