@@ -208,6 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _delayedDouble: 0
   _delayedFloat: 0
+  _dropableObject: {fileID: 0}
   _delayedString: 
   _tagString: 
   _areaString: 

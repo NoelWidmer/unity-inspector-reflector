@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace InspectorReflector
 {
-    public static class DefaultDrawers
+    public static class BuiltInDrawers
     {
         public static object DrawAnimationCurve(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -58,6 +58,12 @@ namespace InspectorReflector
             }
 
             return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
+        }
+
+        public static object DrawDropableObject(PropertyAndInspectAttribute propertyInfo, UnityEngine.Object value, bool allowSceneObjects)
+        {
+            EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+            return EditorGUILayout.ObjectField(value, propertyInfo.Info.PropertyType, allowSceneObjects);
         }
 
         public static object DrawEnum(PropertyAndInspectAttribute propertyInfo, object value)

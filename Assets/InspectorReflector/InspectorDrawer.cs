@@ -18,29 +18,29 @@ namespace InspectorReflector
         {
             _drawersLookup = new Dictionary<string, Func<PropertyAndInspectAttribute, object, object>>();
 
-            _drawersLookup.Add("$", DefaultDrawers.DrawEnum);
+            _drawersLookup.Add("$", BuiltInDrawers.DrawEnum);
 
             //TODO register more type drawers.
-            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawAnimationCurve);
-            RegisterDrawer<bool>(DefaultDrawers.DrawBool);
-            RegisterDrawer<byte>(DefaultDrawers.DrawByte);
-            RegisterDrawer<Bounds>(DefaultDrawers.DrawBounds);
-            RegisterDrawer<char>(DefaultDrawers.DrawChar);
-            RegisterDrawer<Color>(DefaultDrawers.DrawColor);
-            RegisterDrawer<double>(DefaultDrawers.DrawDouble);
-            RegisterDrawer<float>(DefaultDrawers.DrawFloat);
-            RegisterDrawer<int>(DefaultDrawers.DrawInt);
-            RegisterDrawer<long>(DefaultDrawers.DrawLong);
-            RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
-            RegisterDrawer<sbyte>(DefaultDrawers.DrawSByte);
-            RegisterDrawer<short>(DefaultDrawers.DrawShort);
-            RegisterDrawer<string>(DefaultDrawers.DrawString);
-            RegisterDrawer<uint>(DefaultDrawers.DrawUInt);
-            RegisterDrawer<ulong>(DefaultDrawers.DrawULong);
-            RegisterDrawer<ushort>(DefaultDrawers.DrawUShort);
-            RegisterDrawer<Vector2>(DefaultDrawers.DrawVector2);
-            RegisterDrawer<Vector3>(DefaultDrawers.DrawVector3);
-            RegisterDrawer<Vector4>(DefaultDrawers.DrawVector4);
+            RegisterDrawer<AnimationCurve>(BuiltInDrawers.DrawAnimationCurve);
+            RegisterDrawer<bool>(BuiltInDrawers.DrawBool);
+            RegisterDrawer<byte>(BuiltInDrawers.DrawByte);
+            RegisterDrawer<Bounds>(BuiltInDrawers.DrawBounds);
+            RegisterDrawer<char>(BuiltInDrawers.DrawChar);
+            RegisterDrawer<Color>(BuiltInDrawers.DrawColor);
+            RegisterDrawer<double>(BuiltInDrawers.DrawDouble);
+            RegisterDrawer<float>(BuiltInDrawers.DrawFloat);
+            RegisterDrawer<int>(BuiltInDrawers.DrawInt);
+            RegisterDrawer<long>(BuiltInDrawers.DrawLong);
+            RegisterDrawer<Rect>(BuiltInDrawers.DrawRect);
+            RegisterDrawer<sbyte>(BuiltInDrawers.DrawSByte);
+            RegisterDrawer<short>(BuiltInDrawers.DrawShort);
+            RegisterDrawer<string>(BuiltInDrawers.DrawString);
+            RegisterDrawer<uint>(BuiltInDrawers.DrawUInt);
+            RegisterDrawer<ulong>(BuiltInDrawers.DrawULong);
+            RegisterDrawer<ushort>(BuiltInDrawers.DrawUShort);
+            RegisterDrawer<Vector2>(BuiltInDrawers.DrawVector2);
+            RegisterDrawer<Vector3>(BuiltInDrawers.DrawVector3);
+            RegisterDrawer<Vector4>(BuiltInDrawers.DrawVector4);
         }
 
 
@@ -232,38 +232,47 @@ namespace InspectorReflector
 
         private object DrawReference(PropertyAndInspectAttribute property, object reference)
         {
-            if(reference == null)
+            InspectionType inspectionType = property.InspectAttribute.InspectionType;
+
+            if(reference is UnityEngine.Object && (inspectionType == InspectionType.DropableObject || inspectionType == InspectionType.DropableObjectAllowSceneObjects))
             {
-                DrawNull(property.Info.Name);
+                return BuiltInDrawers.DrawDropableObject(property, (UnityEngine.Object)reference, inspectionType == InspectionType.DropableObjectAllowSceneObjects);
             }
             else
             {
-                bool show = true;
-
-                if(reference is UnityEngine.Object)
+                if(reference == null)
                 {
-                    show = EditorGUILayout.InspectorTitlebar(show, (UnityEngine.Object)reference);
+                    DrawNull(property.Info.Name);
                 }
                 else
                 {
-                    show = EditorGUILayout.Foldout(show, property.Info.PropertyType.Name);
+                    bool show = true;
+
+                    if(reference is UnityEngine.Object)
+                    {
+                        show = EditorGUILayout.InspectorTitlebar(show, (UnityEngine.Object)reference);
+                    }
+                    else
+                    {
+                        show = EditorGUILayout.Foldout(show, property.Info.PropertyType.Name);
+                    }
+
+                    if(show)
+                    {
+                        EditorGUILayout.LabelField("test");
+                    }
                 }
 
-                if(show)
-                {
-                    EditorGUILayout.LabelField("test");
-                }
+                //TODO inspect reflected types.
+                return null;
             }
-
-            //TODO inspect reflected types.
-            return null;
         }
 
 
 
         private void DrawNull(string propertyName)
         {
-            EditorGUILayout.LabelField(propertyName, "Not set");
+            EditorGUILayout.LabelField(propertyName, "Not set (null)");
         }
 
 
