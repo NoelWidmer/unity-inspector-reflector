@@ -25,7 +25,7 @@ namespace UnityEngine
 
     public enum FloatInspectionType
     {
-        Field,
-        DelayedField
+        Default,
+        Delayed
     }
 }

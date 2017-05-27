@@ -25,8 +25,8 @@ namespace UnityEngine
 
     public enum StringInspectionType
     {
-        Field, 
-        DelayedField, 
+        Default, 
+        Delayed, 
         Tag, 
         Area
     }

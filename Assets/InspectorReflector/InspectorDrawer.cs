@@ -21,16 +21,23 @@ namespace InspectorReflector
             _drawersLookup.Add("$", DefaultDrawers.DrawEnum);
 
             //TODO register more type drawers.
-            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawCurve);
-            RegisterDrawer<bool>(DefaultDrawers.DrawToggle);
+            RegisterDrawer<AnimationCurve>(DefaultDrawers.DrawAnimationCurve);
+            RegisterDrawer<bool>(DefaultDrawers.DrawBool);
+            RegisterDrawer<byte>(DefaultDrawers.DrawByte);
             RegisterDrawer<Bounds>(DefaultDrawers.DrawBounds);
+            RegisterDrawer<char>(DefaultDrawers.DrawChar);
             RegisterDrawer<Color>(DefaultDrawers.DrawColor);
             RegisterDrawer<double>(DefaultDrawers.DrawDouble);
             RegisterDrawer<float>(DefaultDrawers.DrawFloat);
             RegisterDrawer<int>(DefaultDrawers.DrawInt);
             RegisterDrawer<long>(DefaultDrawers.DrawLong);
             RegisterDrawer<Rect>(DefaultDrawers.DrawRect);
+            RegisterDrawer<sbyte>(DefaultDrawers.DrawSByte);
+            RegisterDrawer<short>(DefaultDrawers.DrawShort);
             RegisterDrawer<string>(DefaultDrawers.DrawString);
+            RegisterDrawer<uint>(DefaultDrawers.DrawUInt);
+            RegisterDrawer<ulong>(DefaultDrawers.DrawULong);
+            RegisterDrawer<ushort>(DefaultDrawers.DrawUShort);
             RegisterDrawer<Vector2>(DefaultDrawers.DrawVector2);
             RegisterDrawer<Vector3>(DefaultDrawers.DrawVector3);
             RegisterDrawer<Vector4>(DefaultDrawers.DrawVector4);

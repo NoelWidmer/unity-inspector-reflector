@@ -26,7 +26,7 @@ namespace UnityEngine
 
     public enum DoubleInspectionType
     {
-        Field,
-        DelayedField
+        Default,
+        Delayed
     }
 }

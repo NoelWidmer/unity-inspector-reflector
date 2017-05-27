@@ -6,6 +6,66 @@ namespace InspectorReflector
 {
     public static class DefaultDrawers
     {
+        public static object DrawAnimationCurve(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            return EditorGUILayout.CurveField(propertyInfo.Info.Name, (AnimationCurve)value);
+        }
+
+        public static object DrawBool(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            return EditorGUILayout.Toggle(propertyInfo.Info.Name, (bool)value);
+        }
+
+        public static object DrawByte(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (byte)value);
+
+            if(newValue < byte.MinValue)
+                return byte.MinValue;
+            else if(newValue > byte.MaxValue)
+                return byte.MaxValue;
+
+            return (byte)newValue;
+        }
+
+        public static object DrawBounds(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            return EditorGUILayout.BoundsField(propertyInfo.Info.Name, (Bounds)value);
+        }
+
+        public static object DrawChar(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            char oldValue = (char)value;
+            string newValue = EditorGUILayout.TextField(propertyInfo.Info.Name, string.Empty + oldValue);
+
+            if(newValue == null || newValue == string.Empty)
+                return default(char);
+
+            return char.Parse(newValue.Substring(0, 1));
+        }
+
+        public static object DrawColor(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            return EditorGUILayout.ColorField(propertyInfo.Info.Name, (Color)value);
+        }
+
+        public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectDoubleAttribute), false);
+
+            if(attr != null && attr.Length == 1)
+            {
+                var doubleAttr = (InspectDoubleAttribute)attr[0];
+                switch(doubleAttr.InspectionType)
+                {
+                    case DoubleInspectionType.Delayed:
+                        return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
+                }
+            }
+
+            return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
+        }
+
         public static object DrawEnum(PropertyAndInspectAttribute propertyInfo, object value)
         {
             var flagAttrs = propertyInfo.Info.PropertyType.GetCustomAttributes(typeof(FlagsAttribute), false);
@@ -25,38 +85,6 @@ namespace InspectorReflector
             }
         }
 
-        public static object DrawBounds(PropertyAndInspectAttribute propertyInfo, object value)
-        {
-            return EditorGUILayout.BoundsField(propertyInfo.Info.Name, (Bounds)value);
-        }
-
-        public static object DrawColor(PropertyAndInspectAttribute propertyInfo, object value)
-        {
-            return EditorGUILayout.ColorField(propertyInfo.Info.Name, (Color)value);
-        }
-
-        public static object DrawCurve(PropertyAndInspectAttribute propertyInfo, object value)
-        {
-            return EditorGUILayout.CurveField(propertyInfo.Info.Name, (AnimationCurve)value);
-        }
-
-        public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
-        {
-            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectDoubleAttribute), false);
-
-            if(attr != null && attr.Length == 1)
-            {
-                var doubleAttr = (InspectDoubleAttribute)attr[0];
-                switch(doubleAttr.InspectionType)
-                {
-                    case DoubleInspectionType.DelayedField:
-                        return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
-                }
-            }
-
-            return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
-        }
-
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
             var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectFloatAttribute), false);
@@ -66,7 +94,7 @@ namespace InspectorReflector
                 var floatAttr = (InspectFloatAttribute)attr[0];
                 switch(floatAttr.InspectionType)
                 {
-                    case FloatInspectionType.DelayedField:
+                    case FloatInspectionType.Delayed:
                         return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
                 }
             }
@@ -89,6 +117,30 @@ namespace InspectorReflector
             return EditorGUILayout.RectField(propertyInfo.Info.Name, (Rect)value);
         }
 
+        public static object DrawSByte(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (sbyte)value);
+
+            if(newValue < sbyte.MinValue)
+                return sbyte.MinValue;
+            else if(newValue > sbyte.MaxValue)
+                return sbyte.MaxValue;
+
+            return (sbyte)newValue;
+        }
+
+        public static object DrawShort(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (short)value);
+
+            if(newValue < short.MinValue)
+                return short.MinValue;
+            else if(newValue > short.MaxValue)
+                return short.MaxValue;
+
+            return (short)newValue;
+        }
+
         public static object DrawString(PropertyAndInspectAttribute propertyInfo, object value)
         {
             var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectStringAttribute), false);
@@ -98,10 +150,10 @@ namespace InspectorReflector
                 var strAttr = (InspectStringAttribute)attr[0];
                 switch(strAttr.InspectionType)
                 {
-                    case StringInspectionType.Field:
+                    case StringInspectionType.Default:
                         break;
 
-                    case StringInspectionType.DelayedField:
+                    case StringInspectionType.Delayed:
                         return EditorGUILayout.DelayedTextField(propertyInfo.Info.Name, (string)value);
 
                     case StringInspectionType.Tag:
@@ -116,9 +168,44 @@ namespace InspectorReflector
             return EditorGUILayout.TextField(propertyInfo.Info.Name, (string)value);
         }
 
-        public static object DrawToggle(PropertyAndInspectAttribute propertyInfo, object value)
+        public static object DrawUInt(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            return EditorGUILayout.Toggle(propertyInfo.Info.Name, (bool)value);
+            long newValue = EditorGUILayout.LongField(propertyInfo.Info.Name, (uint)value);
+
+            if(newValue < uint.MinValue)
+                return uint.MinValue;
+            else if(newValue > uint.MaxValue)
+                return uint.MaxValue;
+
+            return (uint)newValue;
+        }
+
+        public static object DrawULong(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            ulong oldValue = (ulong)value;
+            string newValue = EditorGUILayout.TextField(propertyInfo.Info.Name, string.Empty + oldValue);
+
+            if(newValue == null || newValue == string.Empty)
+                return default(ulong);
+
+            ulong result;
+            if(ulong.TryParse(newValue, out result))
+                return result;
+
+            Debug.LogWarning("Cannot parse " + newValue + " to " + typeof(ulong).FullName);
+            return default(ulong);
+        }
+
+        public static object DrawUShort(PropertyAndInspectAttribute propertyInfo, object value)
+        {
+            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (ushort)value);
+
+            if(newValue < ushort.MinValue)
+                return ushort.MinValue;
+            else if(newValue > ushort.MaxValue)
+                return ushort.MaxValue;
+
+            return (ushort)newValue;
         }
 
         public static object DrawVector2(PropertyAndInspectAttribute propertyInfo, object value)

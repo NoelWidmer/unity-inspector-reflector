@@ -118,9 +118,6 @@ GameObject:
   - component: {fileID: 270483692}
   - component: {fileID: 270483693}
   - component: {fileID: 270483694}
-  - component: {fileID: 270483695}
-  - component: {fileID: 270483696}
-  - component: {fileID: 270483697}
   m_Layer: 0
   m_Name: Sample
   m_TagString: Untagged
@@ -152,34 +149,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d32fd4662240b4ea67671eb1b0f215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boundsProperty:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  _colorProperty: {r: 0, g: 0, b: 0, a: 0}
-  _curveProperty:
+  _defaultAnimationCurve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _intProperty: 0
-  _longProperty: 0
-  _rectProperty:
+  _defaultBool: 0
+  _defaultByte: 0
+  _defaultBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  _defaultChar: 0
+  _defaultColor: {r: 0, g: 0, b: 0, a: 0}
+  _defaultDouble: 0
+  _defaultEnum: 0
+  _flagEnum: 0
+  _defaultFloat: 0
+  _defaultInt: 0
+  _defaultLong: 0
+  _defaultRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 0
     height: 0
-  rectPropertyReadonly:
+  _defaultSByte: 0
+  _defaultShort: 0
+  _defaultString: 
+  _defaultUInt: 0
+  _defaultULong: 0
+  _defaultUShort: 0
+  _defaultVector2: {x: 0, y: 0}
+  _defaultVector3: {x: 0, y: 0, z: 0}
+  _defaultVector4: {x: 0, y: 0, z: 0, w: 0}
+  _rectReadonlyByIR:
     serializedVersion: 2
     x: 0
     y: 0
     width: 0
     height: 0
-  _boolProperty: 0
-  _vector2Property: {x: 0, y: 0}
-  _vector3Property: {x: 0, y: 0, z: 0}
-  _vector4Property: {x: 0, y: 0, z: 0, w: 0}
+  _rectReadonlyByCode:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!114 &270483694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,49 +203,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 270483691}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67913cbb34e5efc40acb36c156f1347b, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fcfd5439c5de904380fb91d7c519146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _field: 
-  _delayedField: 
-  _tag: 
-  _area: 
---- !u!114 &270483695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 270483691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae8b5d8d4697fa14a97f2018b490d805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _field: 0
-  _delayedField: 0
---- !u!114 &270483696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 270483691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d938d9cf5c18ca4690e70ba9a8e9710, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _field: 0
-  _delayedField: 0
---- !u!114 &270483697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 270483691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b7350e33f43984478daceda2ce2ad69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _testEnumProperty: 0
-  _testFlagsProperty: 0
+  _delayedDouble: 0
+  _delayedFloat: 0
+  _delayedString: 
+  _tagString: 
+  _areaString: 
