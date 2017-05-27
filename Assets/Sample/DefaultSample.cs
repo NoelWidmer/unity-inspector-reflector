@@ -396,23 +396,6 @@ namespace InspectorReflector.Sample
         // Readonly
 
         [SerializeField]
-        private Rect _rectReadonlyByIR;
-        [Inspect(InspectionType.Readonly)]
-        public Rect RectReadonlyByIR
-        {
-            get
-            {
-                return _rectReadonlyByIR;
-            }
-            set
-            {
-                _rectReadonlyByIR = value;
-            }
-        }
-
-
-
-        [SerializeField]
         private Rect _rectReadonlyByCode;
         [Inspect]
         public Rect RectReadonlyByCode

@@ -62,8 +62,11 @@ namespace InspectorReflector
 
         public static object DrawDropableObject(PropertyAndInspectAttribute propertyInfo, UnityEngine.Object value, bool allowSceneObjects)
         {
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
-            return EditorGUILayout.ObjectField(value, propertyInfo.Info.PropertyType, allowSceneObjects);
+            UnityEngine.Object result = EditorGUILayout.ObjectField(value, propertyInfo.Info.PropertyType, allowSceneObjects);
+            EditorGUILayout.EndHorizontal();
+            return result;
         }
 
         public static object DrawEnum(PropertyAndInspectAttribute propertyInfo, object value)
@@ -87,8 +90,10 @@ namespace InspectorReflector
 
         public static object DrawLayerMask(PropertyAndInspectAttribute propertyInfo, object value)
         {
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
             int newValue = (EditorGUILayout.LayerField((LayerMask)value));
+            EditorGUILayout.EndHorizontal();
             return (LayerMask)newValue;
         }
 
@@ -159,8 +164,11 @@ namespace InspectorReflector
                     return EditorGUILayout.TagField(propertyInfo.Info.Name, (string)value);
 
                 case InspectionType.AreaString:
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
-                    return EditorGUILayout.TextArea((string)value);
+                    string result = EditorGUILayout.TextArea((string)value);
+                    EditorGUILayout.EndHorizontal();
+                    return result;
             }
 
             return EditorGUILayout.TextField(propertyInfo.Info.Name, (string)value);

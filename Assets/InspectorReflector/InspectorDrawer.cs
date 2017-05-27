@@ -172,13 +172,22 @@ namespace InspectorReflector
                 PropertyInfo propertyInfo = property.Info;
                 _propertyPath.Push(propertyInfo.Name);
 
+                InspectionType inspectionType = property.InspectAttribute.InspectionType;
+
                 if(propertyInfo.CanRead == false)
                 {
                     Warn("The following property cannot be read from: " + propertyInfo.DeclaringType.FullName + "." + propertyInfo.Name);
                 }
-                else if(propertyInfo.CanWrite == false || property.InspectAttribute.InspectionType == InspectionType.Readonly)
+                else if(propertyInfo.CanWrite == false || inspectionType == InspectionType.Readonly)
                 {
                     EditorGUILayout.LabelField(propertyInfo.Name, propertyInfo.GetValue(target, null).ToString());
+                }
+                else if(inspectionType == InspectionType.ReadonlySelectable)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel(propertyInfo.Name);
+                    EditorGUILayout.SelectableLabel(propertyInfo.GetValue(target, null).ToString());
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {

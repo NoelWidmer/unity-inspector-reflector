@@ -66,6 +66,36 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
+        private Rect _rectReadonlyByIR;
+        [Inspect(InspectionType.Readonly)]
+        public Rect RectReadonlyByIR
+        {
+            get
+            {
+                return _rectReadonlyByIR;
+            }
+            set
+            {
+                _rectReadonlyByIR = value;
+            }
+        }
+
+        [SerializeField]
+        private Rect _rectReadonlySelectableByIR;
+        [Inspect(InspectionType.ReadonlySelectable)]
+        public Rect RectReadonlySelectableByIR
+        {
+            get
+            {
+                return _rectReadonlySelectableByIR;
+            }
+            set
+            {
+                _rectReadonlySelectableByIR = value;
+            }
+        }
+
+        [SerializeField]
         private string _delayedString;
         [Inspect(InspectionType.DelayedString)]
         public string DelayedString

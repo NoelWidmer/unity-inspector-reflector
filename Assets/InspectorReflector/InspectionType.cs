@@ -2,6 +2,7 @@
 {
     Normal = 0, 
     Readonly,
+    ReadonlySelectable,
     DropableObject,
     DropableObjectAllowSceneObjects,
     DelayedDouble, 
