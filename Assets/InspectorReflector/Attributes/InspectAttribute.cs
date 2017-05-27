@@ -5,22 +5,26 @@ namespace UnityEngine
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
     public class InspectAttribute : Attribute
     {
-        private bool _inspectAsReadonly = false;
+        private readonly InspectionType _inspectionType = InspectionType.Normal;
+
+
 
         public InspectAttribute()
         {
         }
 
-        public InspectAttribute(bool inspectAsReadonly)
+        public InspectAttribute(InspectionType inspectionType)
         {
-            _inspectAsReadonly = inspectAsReadonly;
+            _inspectionType = inspectionType;
         }
 
-        public bool InspectAsReadonly
+
+
+        public InspectionType InspectionType
         {
             get
             {
-                return _inspectAsReadonly;
+                return _inspectionType;
             }
         }
     }

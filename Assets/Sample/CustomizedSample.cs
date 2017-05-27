@@ -7,7 +7,7 @@ namespace InspectorReflector.Sample
     {
         [SerializeField]
         private double _delayedDouble;
-        [InspectDouble(DoubleInspectionType.Delayed)]
+        [Inspect(InspectionType.DelayedDouble)]
         public double DelayedDouble
         {
             get
@@ -22,7 +22,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private float _delayedFloat;
-        [InspectFloat(FloatInspectionType.Delayed)]
+        [Inspect(InspectionType.DelayedFloat)]
         public float DelayedFloat
         {
             get
@@ -37,7 +37,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private string _delayedString;
-        [InspectString(StringInspectionType.Delayed)]
+        [Inspect(InspectionType.DelayedString)]
         public string DelayedString
         {
             get
@@ -52,7 +52,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private string _tagString;
-        [InspectString(StringInspectionType.Tag)]
+        [Inspect(InspectionType.TagString)]
         public string TagString
         {
             get
@@ -67,7 +67,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private string _areaString;
-        [InspectString(StringInspectionType.Area)]
+        [Inspect(InspectionType.AreaString)]
         public string AreaString
         {
             get

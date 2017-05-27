@@ -380,7 +380,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private Rect _rectReadonlyByIR;
-        [Inspect(true)]
+        [Inspect(InspectionType.Readonly)]
         public Rect RectReadonlyByIR
         {
             get

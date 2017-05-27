@@ -51,16 +51,10 @@ namespace InspectorReflector
 
         public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectDoubleAttribute), false);
-
-            if(attr != null && attr.Length == 1)
+            switch(propertyInfo.InspectAttribute.InspectionType)
             {
-                var doubleAttr = (InspectDoubleAttribute)attr[0];
-                switch(doubleAttr.InspectionType)
-                {
-                    case DoubleInspectionType.Delayed:
-                        return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
-                }
+                case InspectionType.DelayedDouble:
+                    return EditorGUILayout.DelayedDoubleField(propertyInfo.Info.Name, (double)value);
             }
 
             return EditorGUILayout.DoubleField(propertyInfo.Info.Name, (double)value);
@@ -87,16 +81,10 @@ namespace InspectorReflector
 
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectFloatAttribute), false);
-
-            if(attr != null && attr.Length == 1)
+            switch(propertyInfo.InspectAttribute.InspectionType)
             {
-                var floatAttr = (InspectFloatAttribute)attr[0];
-                switch(floatAttr.InspectionType)
-                {
-                    case FloatInspectionType.Delayed:
-                        return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
-                }
+                case InspectionType.DelayedFloat:
+                    return EditorGUILayout.DelayedFloatField(propertyInfo.Info.Name, (float)value);
             }
 
             return EditorGUILayout.FloatField(propertyInfo.Info.Name, (float)value);
@@ -143,26 +131,17 @@ namespace InspectorReflector
 
         public static object DrawString(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            var attr = propertyInfo.Info.GetCustomAttributes(typeof(InspectStringAttribute), false);
-
-            if(attr != null && attr.Length == 1)
+            switch(propertyInfo.InspectAttribute.InspectionType)
             {
-                var strAttr = (InspectStringAttribute)attr[0];
-                switch(strAttr.InspectionType)
-                {
-                    case StringInspectionType.Default:
-                        break;
+                case InspectionType.DelayedString:
+                    return EditorGUILayout.DelayedTextField(propertyInfo.Info.Name, (string)value);
 
-                    case StringInspectionType.Delayed:
-                        return EditorGUILayout.DelayedTextField(propertyInfo.Info.Name, (string)value);
+                case InspectionType.TagString:
+                    return EditorGUILayout.TagField(propertyInfo.Info.Name, (string)value);
 
-                    case StringInspectionType.Tag:
-                        return EditorGUILayout.TagField(propertyInfo.Info.Name, (string)value);
-
-                    case StringInspectionType.Area:
-                        EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
-                        return EditorGUILayout.TextArea((string)value);
-                }
+                case InspectionType.AreaString:
+                    EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+                    return EditorGUILayout.TextArea((string)value);
             }
 
             return EditorGUILayout.TextField(propertyInfo.Info.Name, (string)value);
