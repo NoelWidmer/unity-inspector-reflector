@@ -11,14 +11,34 @@ namespace InspectorReflector
             return EditorGUILayout.CurveField(propertyInfo.Info.Name, (AnimationCurve)value);
         }
 
+
+
         public static object DrawBool(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.Toggle(propertyInfo.Info.Name, (bool)value);
         }
 
+
+
         public static object DrawByte(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (byte)value);
+            int newValue;
+            if(propertyInfo.InspectAttribute.IntSliderMin.HasValue)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+
+                int sliderMax = propertyInfo.InspectAttribute.IntSliderMax.Value;
+                int sliderMin = propertyInfo.InspectAttribute.IntSliderMin.Value;
+
+                newValue = EditorGUILayout.IntSlider((byte)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (byte)value);
+            }
 
             if(newValue < byte.MinValue)
                 return byte.MinValue;
@@ -28,10 +48,14 @@ namespace InspectorReflector
             return (byte)newValue;
         }
 
+
+
         public static object DrawBounds(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.BoundsField(propertyInfo.Info.Name, (Bounds)value);
         }
+
+
 
         public static object DrawChar(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -44,10 +68,14 @@ namespace InspectorReflector
             return char.Parse(newValue.Substring(0, 1));
         }
 
+
+
         public static object DrawColor(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.ColorField(propertyInfo.Info.Name, (Color)value);
         }
+
+
 
         public static object DrawDouble(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -77,6 +105,8 @@ namespace InspectorReflector
             }
         }
 
+
+
         public static object DrawDropableObject(PropertyAndInspectAttribute propertyInfo, UnityEngine.Object value, bool allowSceneObjects)
         {
             EditorGUILayout.BeginHorizontal();
@@ -85,6 +115,8 @@ namespace InspectorReflector
             EditorGUILayout.EndHorizontal();
             return result;
         }
+
+
 
         public static object DrawEnum(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -105,6 +137,8 @@ namespace InspectorReflector
             }
         }
 
+
+
         public static object DrawLayerMask(PropertyAndInspectAttribute propertyInfo, object value)
         {
             EditorGUILayout.BeginHorizontal();
@@ -113,6 +147,8 @@ namespace InspectorReflector
             EditorGUILayout.EndHorizontal();
             return (LayerMask)newValue;
         }
+
+
 
         public static object DrawFloat(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -141,30 +177,70 @@ namespace InspectorReflector
             }
         }
 
+
+
         public static object DrawInt(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            switch(propertyInfo.InspectAttribute.InspectionType)
+            if(propertyInfo.InspectAttribute.IntSliderMin.HasValue)
             {
-                case InspectionType.DelayedInt:
-                    return EditorGUILayout.DelayedIntField(propertyInfo.Info.Name, (int)value);
-            }
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
 
-            return EditorGUILayout.IntField(propertyInfo.Info.Name, (int)value);
+                int sliderMax = propertyInfo.InspectAttribute.IntSliderMax.Value;
+                int sliderMin = propertyInfo.InspectAttribute.IntSliderMin.Value;
+
+                int newVal = EditorGUILayout.IntSlider((int)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+                return newVal;
+            }
+            else
+            {
+                switch(propertyInfo.InspectAttribute.InspectionType)
+                {
+                    case InspectionType.DelayedInt:
+                        return EditorGUILayout.DelayedIntField(propertyInfo.Info.Name, (int)value);
+                }
+
+                return EditorGUILayout.IntField(propertyInfo.Info.Name, (int)value);
+            }
         }
+
+
 
         public static object DrawLong(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.LongField(propertyInfo.Info.Name, (long)value);
         }
 
+
+
         public static object DrawRect(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.RectField(propertyInfo.Info.Name, (Rect)value);
         }
 
+
+
         public static object DrawSByte(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (sbyte)value);
+            int newValue;
+            if(propertyInfo.InspectAttribute.IntSliderMin.HasValue)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+
+                int sliderMax = propertyInfo.InspectAttribute.IntSliderMax.Value;
+                int sliderMin = propertyInfo.InspectAttribute.IntSliderMin.Value;
+
+                newValue = EditorGUILayout.IntSlider((sbyte)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (sbyte)value);
+            }
 
             if(newValue < sbyte.MinValue)
                 return sbyte.MinValue;
@@ -174,9 +250,27 @@ namespace InspectorReflector
             return (sbyte)newValue;
         }
 
+
+
         public static object DrawShort(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (short)value);
+            int newValue;
+            if(propertyInfo.InspectAttribute.IntSliderMin.HasValue)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+
+                int sliderMax = propertyInfo.InspectAttribute.IntSliderMax.Value;
+                int sliderMin = propertyInfo.InspectAttribute.IntSliderMin.Value;
+
+                newValue = EditorGUILayout.IntSlider((short)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                 newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (short)value);
+            }
 
             if(newValue < short.MinValue)
                 return short.MinValue;
@@ -185,6 +279,8 @@ namespace InspectorReflector
 
             return (short)newValue;
         }
+
+
 
         public static object DrawString(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -207,6 +303,8 @@ namespace InspectorReflector
             return EditorGUILayout.TextField(propertyInfo.Info.Name, (string)value);
         }
 
+
+
         public static object DrawUInt(PropertyAndInspectAttribute propertyInfo, object value)
         {
             long newValue = EditorGUILayout.LongField(propertyInfo.Info.Name, (uint)value);
@@ -218,6 +316,8 @@ namespace InspectorReflector
 
             return (uint)newValue;
         }
+
+
 
         public static object DrawULong(PropertyAndInspectAttribute propertyInfo, object value)
         {
@@ -235,9 +335,27 @@ namespace InspectorReflector
             return default(ulong);
         }
 
+
+
         public static object DrawUShort(PropertyAndInspectAttribute propertyInfo, object value)
         {
-            int newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (ushort)value);
+            int newValue;
+            if(propertyInfo.InspectAttribute.IntSliderMin.HasValue)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(propertyInfo.Info.Name);
+
+                int sliderMax = propertyInfo.InspectAttribute.IntSliderMax.Value;
+                int sliderMin = propertyInfo.InspectAttribute.IntSliderMin.Value;
+
+                newValue = EditorGUILayout.IntSlider((ushort)value, sliderMin, sliderMax);
+
+                EditorGUILayout.EndHorizontal();
+            }
+            else
+            {
+                newValue = EditorGUILayout.IntField(propertyInfo.Info.Name, (ushort)value);
+            }
 
             if(newValue < ushort.MinValue)
                 return ushort.MinValue;
@@ -247,15 +365,21 @@ namespace InspectorReflector
             return (ushort)newValue;
         }
 
+
+
         public static object DrawVector2(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.Vector2Field(propertyInfo.Info.Name, (Vector2)value);
         }
 
+
+
         public static object DrawVector3(PropertyAndInspectAttribute propertyInfo, object value)
         {
             return EditorGUILayout.Vector3Field(propertyInfo.Info.Name, (Vector3)value);
         }
+
+
 
         public static object DrawVector4(PropertyAndInspectAttribute propertyInfo, object value)
         {

@@ -6,6 +6,21 @@ namespace InspectorReflector.Sample
     public class CustomizedSample : MonoBehaviour
     {
         [SerializeField]
+        private byte _sliderByte;
+        [Inspect(0, 100)]
+        public byte SliderByte
+        {
+            get
+            {
+                return _sliderByte;
+            }
+            set
+            {
+                _sliderByte = value;
+            }
+        }
+
+        [SerializeField]
         private double _delayedDouble;
         [Inspect(InspectionType.DelayedDouble)]
         public double DelayedDouble
@@ -81,6 +96,21 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
+        private int _sliderInt;
+        [Inspect(-100, 100)]
+        public int SliderInt
+        {
+            get
+            {
+                return _sliderInt;
+            }
+            set
+            {
+                _sliderInt = value;
+            }
+        }
+
+        [SerializeField]
         private GameObject _dropableObject;
         [Inspect(InspectionType.DropableObject)]
         public GameObject DropableObject
@@ -126,6 +156,36 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
+        private sbyte _sliderSByte;
+        [Inspect(-100, 100)]
+        public sbyte SliderSByte
+        {
+            get
+            {
+                return _sliderSByte;
+            }
+            set
+            {
+                _sliderSByte = value;
+            }
+        }
+
+        [SerializeField]
+        private short _sliderShort;
+        [Inspect(-100, 100)]
+        public short SliderShort
+        {
+            get
+            {
+                return _sliderShort;
+            }
+            set
+            {
+                _sliderShort = value;
+            }
+        }
+
+        [SerializeField]
         private string _delayedString;
         [Inspect(InspectionType.DelayedString)]
         public string DelayedString
@@ -167,6 +227,21 @@ namespace InspectorReflector.Sample
             set
             {
                 _areaString = value;
+            }
+        }
+
+        [SerializeField]
+        private ushort _sliderUShort;
+        [Inspect(0, 100)]
+        public ushort SliderUShort
+        {
+            get
+            {
+                return _sliderUShort;
+            }
+            set
+            {
+                _sliderUShort = value;
             }
         }
     }
