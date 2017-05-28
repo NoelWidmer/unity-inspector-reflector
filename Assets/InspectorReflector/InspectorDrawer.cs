@@ -93,6 +93,10 @@ namespace InspectorReflector
             if(target == null)
                 throw new ArgumentNullException("target");
 
+            if(target.GetType().Name == "SampleRef")
+            {
+            }
+
             // Get all relevant fields and properties.
             List<FieldInfo> inspectableFields = null;
             List<PropertyInfo> inspectableProperties = null;
@@ -102,7 +106,7 @@ namespace InspectorReflector
                 FieldInfo[] inspectableFieldsTmp = target.GetType().GetFields(flags);
                 PropertyInfo[] inspectablePropertiesTmp = target.GetType().GetProperties(flags);
 
-                if(inspectableFieldsTmp != null && inspectablePropertiesTmp.Length > 0)
+                if(inspectableFieldsTmp != null && inspectableFieldsTmp.Length > 0)
                     inspectableFields = inspectableFieldsTmp.ToList();
 
                 if(inspectablePropertiesTmp != null || inspectablePropertiesTmp.Length > 0)
@@ -282,28 +286,18 @@ namespace InspectorReflector
                 if(reference == null)
                 {
                     DrawNull(fieldOrPropertyInfo.Info.Name);
+                    return null;
                 }
                 else
                 {
-                    bool show = true;
+                    bool show = EditorGUILayout.Foldout(true, fieldOrPropertyInfo.Info.Name);
+                    
+                    EditorGUI.indentLevel++;
+                    ReflectInspector(reference);
+                    EditorGUI.indentLevel--;
 
-                    if(reference is UnityEngine.Object)
-                    {
-                        show = EditorGUILayout.InspectorTitlebar(show, (UnityEngine.Object)reference);
-                    }
-                    else
-                    {
-                        show = EditorGUILayout.Foldout(show, fieldOrPropertyInfo.RealType.Name);
-                    }
-
-                    if(show)
-                    {
-                        EditorGUILayout.LabelField("test");
-                    }
+                    return reference;
                 }
-
-                //TODO inspect reflected types.
-                return null;
             }
         }
 

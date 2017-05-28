@@ -213,6 +213,23 @@ namespace InspectorReflector.Sample
 
 
         [SerializeField]
+        private ObjectSample _defaultObjectSample = new ObjectSample();
+        [Inspect]
+        public ObjectSample DefaultObjectSample
+        {
+            get
+            {
+                return _defaultObjectSample;
+            }
+            set
+            {
+                _defaultObjectSample = value;
+            }
+        }
+
+
+
+        [SerializeField]
         private Rect _defaultRect;
         [Inspect]
         public Rect DefaultRect
@@ -412,6 +429,43 @@ namespace InspectorReflector.Sample
             Two = 2,
             Four = 4,
             Eight = 8
+        }
+
+        public class ObjectSample
+        {
+            [Inspect]
+            public string Name;
+
+
+
+            [SerializeField]
+            private int _exp;
+            [Inspect]
+            public int EXP
+            {
+                get
+                {
+                    return _exp;
+                }
+                set
+                {
+                    _exp = value;
+                    _level = (int)Mathf.Floor(value / 100f);
+                }
+            }
+
+
+
+            [SerializeField]
+            private int _level;
+            [Inspect]
+            public int Level
+            {
+                get
+                {
+                    return _level;
+                }
+            }
         }
     }
 }

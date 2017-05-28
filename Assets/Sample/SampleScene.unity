@@ -203,13 +203,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcfd5439c5de904380fb91d7c519146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sliderByte: 0
+  _sliderByte: 32
   _delayedDouble: 125869874
   _sliderDouble: 0
   _delayedFloat: 0
-  _sliderFloat: 0
+  _sliderFloat: 0.653
   _delayedInt: 0
-  _sliderInt: -34
+  _sliderInt: 100
   _dropableObject: {fileID: 0}
   _dropableObjectAllowSceneObjects: {fileID: 0}
   _rectReadonlyByIR:
