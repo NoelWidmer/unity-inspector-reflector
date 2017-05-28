@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEngine
+namespace InspectorReflector
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class InspectAttribute : Attribute

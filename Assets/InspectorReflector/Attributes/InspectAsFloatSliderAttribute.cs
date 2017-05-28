@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace UnityEngine
+namespace InspectorReflector
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public class InspectAsFloatSliderAttribute : InspectAttribute
+    public sealed class InspectAsFloatSliderAttribute : InspectAttribute
     {
         public readonly float SliderMin;
         public readonly float SliderMax;

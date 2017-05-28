@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using UnityEngine;
+using InspectorReflector;
 
 public abstract class MemberInfoAndInspectAttr
 {

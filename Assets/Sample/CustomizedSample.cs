@@ -7,7 +7,7 @@ namespace InspectorReflector.Sample
     {
         [SerializeField]
         private byte _sliderByte;
-        [InspectAsIntSlider(0, 100)]
+        [InspectAsByteSlider(0, 100)]
         public byte SliderByte
         {
             get
@@ -172,7 +172,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private sbyte _sliderSByte;
-        [InspectAsIntSlider(-100, 100)]
+        [InspectAsSByteSlider(-100, 100)]
         public sbyte SliderSByte
         {
             get
@@ -187,7 +187,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private short _sliderShort;
-        [InspectAsIntSlider(-100, 100)]
+        [InspectAsShortSlider(-100, 100)]
         public short SliderShort
         {
             get
@@ -247,7 +247,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private ushort _sliderUShort;
-        [InspectAsIntSlider(0, 100)]
+        [InspectAsUShortSlider(0, 100)]
         public ushort SliderUShort
         {
             get

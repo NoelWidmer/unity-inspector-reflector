@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEngine
+namespace InspectorReflector
 {
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class EnableIRAttribute : Attribute

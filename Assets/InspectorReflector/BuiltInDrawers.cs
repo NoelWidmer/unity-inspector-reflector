@@ -23,9 +23,9 @@ namespace InspectorReflector
         public static object DrawByte(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
+            if(memberInfo.InspectAttribute is InspectAsByteSliderAttribute)
             {
-                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+                var attr = (InspectAsByteSliderAttribute)memberInfo.InspectAttribute;
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
@@ -35,12 +35,12 @@ namespace InspectorReflector
             else
             {
                 newValue = EditorGUILayout.IntField(memberInfo.Info.Name, (byte)value);
-            }
 
-            if(newValue < byte.MinValue)
-                return byte.MinValue;
-            else if(newValue > byte.MaxValue)
-                return byte.MaxValue;
+                if(newValue < byte.MinValue)
+                    return byte.MinValue;
+                else if(newValue > byte.MaxValue)
+                    return byte.MaxValue;
+            }
 
             return (byte)newValue;
         }
@@ -215,9 +215,9 @@ namespace InspectorReflector
         public static object DrawSByte(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
+            if(memberInfo.InspectAttribute is InspectAsSByteSliderAttribute)
             {
-                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+                var attr = (InspectAsSByteSliderAttribute)memberInfo.InspectAttribute;
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
@@ -227,12 +227,12 @@ namespace InspectorReflector
             else
             {
                 newValue = EditorGUILayout.IntField(memberInfo.Info.Name, (sbyte)value);
-            }
 
-            if(newValue < sbyte.MinValue)
-                return sbyte.MinValue;
-            else if(newValue > sbyte.MaxValue)
-                return sbyte.MaxValue;
+                if(newValue < sbyte.MinValue)
+                    return sbyte.MinValue;
+                else if(newValue > sbyte.MaxValue)
+                    return sbyte.MaxValue;
+            }
 
             return (sbyte)newValue;
         }
@@ -242,9 +242,9 @@ namespace InspectorReflector
         public static object DrawShort(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
+            if(memberInfo.InspectAttribute is InspectAsShortSliderAttribute)
             {
-                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+                var attr = (InspectAsShortSliderAttribute)memberInfo.InspectAttribute;
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
@@ -254,12 +254,12 @@ namespace InspectorReflector
             else
             {
                  newValue = EditorGUILayout.IntField(memberInfo.Info.Name, (short)value);
-            }
 
-            if(newValue < short.MinValue)
-                return short.MinValue;
-            else if(newValue > short.MaxValue)
-                return short.MaxValue;
+                if(newValue < short.MinValue)
+                    return short.MinValue;
+                else if(newValue > short.MaxValue)
+                    return short.MaxValue;
+            }
 
             return (short)newValue;
         }
@@ -323,9 +323,9 @@ namespace InspectorReflector
         public static object DrawUShort(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
+            if(memberInfo.InspectAttribute is InspectAsUShortSliderAttribute)
             {
-                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+                var attr = (InspectAsUShortSliderAttribute)memberInfo.InspectAttribute;
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
@@ -335,12 +335,12 @@ namespace InspectorReflector
             else
             {
                 newValue = EditorGUILayout.IntField(memberInfo.Info.Name, (ushort)value);
-            }
 
-            if(newValue < ushort.MinValue)
-                return ushort.MinValue;
-            else if(newValue > ushort.MaxValue)
-                return ushort.MaxValue;
+                if(newValue < ushort.MinValue)
+                    return ushort.MinValue;
+                else if(newValue > ushort.MaxValue)
+                    return ushort.MaxValue;
+            }
 
             return (ushort)newValue;
         }

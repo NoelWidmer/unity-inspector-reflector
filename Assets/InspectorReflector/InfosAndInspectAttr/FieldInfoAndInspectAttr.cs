@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using UnityEngine;
+using InspectorReflector;
 
 public class FieldInfoAndInspectAttr : MemberInfoAndInspectAttr
 {
