@@ -20,8 +20,7 @@ namespace InspectorReflector
             _drawersLookup = new Dictionary<string, Func<MemberInfoAndInspectAttr, object, object>>();
 
             _drawersLookup.Add("$", BuiltInDrawers.DrawEnum);
-
-            //TODO register more type drawers.
+            
             RegisterDrawer<AnimationCurve>(BuiltInDrawers.DrawAnimationCurve);
             RegisterDrawer<bool>(BuiltInDrawers.DrawBool);
             RegisterDrawer<byte>(BuiltInDrawers.DrawByte);
@@ -70,37 +69,26 @@ namespace InspectorReflector
 
 
 
-        private Stack<string> _propertyPath = new Stack<string>();
-        private TransientData _transientData;
-
-
-
         public bool ShouldReflectInspector(object target)
         {
             if(target == null)
                 throw new ArgumentNullException("target");
-
-            //TODO need better way to recognize inspectable types.
-            object[] attributes = target.GetType().GetCustomAttributes(typeof(InspectAttribute), false);
+            
+            object[] attributes = target.GetType().GetCustomAttributes(typeof(EnableIRAttribute), false);
 
             if(attributes == null || attributes.Length == 0)
             {
                 return false;
             }
-            else if(attributes.Length == 1)
-            {
-                return true;
-            }
             else
             {
-                Warn("Found multiple attributes of type " + typeof(InspectAttribute).Name + " on " + target.GetType().FullName);
-                return false;
+                return true;
             }
         }
 
 
 
-        public void ReflectInspector(object target, TransientData transientData)
+        public void ReflectInspector(object target)
         {
             if(target == null)
                 throw new ArgumentNullException("target");
@@ -196,8 +184,7 @@ namespace InspectorReflector
 
             if(fieldOrPropertyInfos.Count == 0)
                 return;
-
-            _transientData = transientData;
+            
             DrawFieldsAndProperties(target, fieldOrPropertyInfos);
         }
 
@@ -205,15 +192,9 @@ namespace InspectorReflector
 
         private void DrawFieldsAndProperties(object target, List<MemberInfoAndInspectAttr> fieldOrPropertyInfos)
         {
-            _propertyPath.Clear();
-
             foreach(var fieldOrPropertyInfo in fieldOrPropertyInfos)
             {
                 MemberInfo memberInfo = fieldOrPropertyInfo.Info;
-                //PropertyInfo propertyInfo = fieldOrPropertyInfo.Info is PropertyInfo ? (PropertyInfo)fieldOrPropertyInfo.Info : null;
-                //FieldInfo fieldInfo = fieldOrPropertyInfo.Info is FieldInfo ? (FieldInfo)fieldOrPropertyInfo.Info : null;
-
-                _propertyPath.Push(memberInfo.Name);
 
                 InspectionType inspectionType = fieldOrPropertyInfo.InspectAttribute.InspectionType;
 
@@ -279,8 +260,6 @@ namespace InspectorReflector
                     if(origValueOrRef != newValueOrRef)
                         fieldOrPropertyInfo.SetValue(target, newValueOrRef);
                 }
-
-                _propertyPath.Pop();
             }
         }
 

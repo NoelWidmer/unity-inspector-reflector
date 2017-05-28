@@ -2,12 +2,12 @@
 
 namespace InspectorReflector.Sample
 {
-    [Inspect]
+    [EnableIR]
     public class CustomizedSample : MonoBehaviour
     {
         [SerializeField]
         private byte _sliderByte;
-        [Inspect(0, 100)]
+        [InspectAsIntSlider(0, 100)]
         public byte SliderByte
         {
             get
@@ -37,7 +37,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private double _sliderDouble;
-        [Inspect(0f, 1f)]
+        [InspectAsFloatSlider(0f, 1f)]
         public double SliderDouble
         {
             get
@@ -67,7 +67,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private float _sliderFloat;
-        [Inspect(0f, 1f)]
+        [InspectAsFloatSlider(0f, 1f)]
         public float SliderFloat
         {
             get
@@ -97,7 +97,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private int _sliderInt;
-        [Inspect(-100, 100)]
+        [InspectAsIntSlider(-100, 100)]
         public int SliderInt
         {
             get
@@ -172,7 +172,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private sbyte _sliderSByte;
-        [Inspect(-100, 100)]
+        [InspectAsIntSlider(-100, 100)]
         public sbyte SliderSByte
         {
             get
@@ -187,7 +187,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private short _sliderShort;
-        [Inspect(-100, 100)]
+        [InspectAsIntSlider(-100, 100)]
         public short SliderShort
         {
             get
@@ -247,7 +247,7 @@ namespace InspectorReflector.Sample
 
         [SerializeField]
         private ushort _sliderUShort;
-        [Inspect(0, 100)]
+        [InspectAsIntSlider(0, 100)]
         public ushort SliderUShort
         {
             get

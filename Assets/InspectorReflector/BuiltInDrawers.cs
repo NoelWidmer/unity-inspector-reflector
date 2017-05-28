@@ -23,16 +23,13 @@ namespace InspectorReflector
         public static object DrawByte(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute.IntSliderMin.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
             {
+                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                int sliderMax = memberInfo.InspectAttribute.IntSliderMax.Value;
-                int sliderMin = memberInfo.InspectAttribute.IntSliderMin.Value;
-
-                newValue = EditorGUILayout.IntSlider((byte)value, sliderMin, sliderMax);
-
+                newValue = EditorGUILayout.IntSlider((byte)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
             }
             else
@@ -79,16 +76,15 @@ namespace InspectorReflector
 
         public static object DrawDouble(MemberInfoAndInspectAttr memberInfo, object value)
         {
-            if(memberInfo.InspectAttribute.FloatSliderMax.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsFloatSliderAttribute)
             {
+                var attr = (InspectAsFloatSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
 
-                float sliderMax = memberInfo.InspectAttribute.FloatSliderMax.Value;
-                float sliderMin = memberInfo.InspectAttribute.FloatSliderMin.Value;
-
                 float narrowedDouble = Convert.ToSingle((double)value);
-                float newValue = EditorGUILayout.Slider(narrowedDouble, sliderMin, sliderMax);
+                float newValue = EditorGUILayout.Slider(narrowedDouble, attr.SliderMin, attr.SliderMax);
 
                 EditorGUILayout.EndHorizontal();
                 return (double)newValue;
@@ -152,16 +148,13 @@ namespace InspectorReflector
 
         public static object DrawFloat(MemberInfoAndInspectAttr memberInfo, object value)
         {
-            if(memberInfo.InspectAttribute.FloatSliderMax.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsFloatSliderAttribute)
             {
+                var attr = (InspectAsFloatSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                float sliderMax = memberInfo.InspectAttribute.FloatSliderMax.Value;
-                float sliderMin = memberInfo.InspectAttribute.FloatSliderMin.Value;
-
-                float newVal = EditorGUILayout.Slider((float)value, sliderMin, sliderMax);
-
+                float newVal = EditorGUILayout.Slider((float)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
                 return newVal;
             }
@@ -181,16 +174,13 @@ namespace InspectorReflector
 
         public static object DrawInt(MemberInfoAndInspectAttr memberInfo, object value)
         {
-            if(memberInfo.InspectAttribute.IntSliderMin.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
             {
+                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                int sliderMax = memberInfo.InspectAttribute.IntSliderMax.Value;
-                int sliderMin = memberInfo.InspectAttribute.IntSliderMin.Value;
-
-                int newVal = EditorGUILayout.IntSlider((int)value, sliderMin, sliderMax);
-
+                int newVal = EditorGUILayout.IntSlider((int)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
                 return newVal;
             }
@@ -225,16 +215,13 @@ namespace InspectorReflector
         public static object DrawSByte(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute.IntSliderMin.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
             {
+                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                int sliderMax = memberInfo.InspectAttribute.IntSliderMax.Value;
-                int sliderMin = memberInfo.InspectAttribute.IntSliderMin.Value;
-
-                newValue = EditorGUILayout.IntSlider((sbyte)value, sliderMin, sliderMax);
-
+                newValue = EditorGUILayout.IntSlider((sbyte)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
             }
             else
@@ -255,16 +242,13 @@ namespace InspectorReflector
         public static object DrawShort(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute.IntSliderMin.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
             {
+                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                int sliderMax = memberInfo.InspectAttribute.IntSliderMax.Value;
-                int sliderMin = memberInfo.InspectAttribute.IntSliderMin.Value;
-
-                newValue = EditorGUILayout.IntSlider((short)value, sliderMin, sliderMax);
-
+                newValue = EditorGUILayout.IntSlider((short)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
             }
             else
@@ -339,16 +323,13 @@ namespace InspectorReflector
         public static object DrawUShort(MemberInfoAndInspectAttr memberInfo, object value)
         {
             int newValue;
-            if(memberInfo.InspectAttribute.IntSliderMin.HasValue)
+            if(memberInfo.InspectAttribute is InspectAsIntSliderAttribute)
             {
+                var attr = (InspectAsIntSliderAttribute)memberInfo.InspectAttribute;
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(memberInfo.Info.Name);
-
-                int sliderMax = memberInfo.InspectAttribute.IntSliderMax.Value;
-                int sliderMin = memberInfo.InspectAttribute.IntSliderMin.Value;
-
-                newValue = EditorGUILayout.IntSlider((ushort)value, sliderMin, sliderMax);
-
+                newValue = EditorGUILayout.IntSlider((ushort)value, attr.SliderMin, attr.SliderMax);
                 EditorGUILayout.EndHorizontal();
             }
             else

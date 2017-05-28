@@ -3,25 +3,14 @@ using UnityEngine;
 
 namespace InspectorReflector.Sample
 {
-    [Inspect]
+    [EnableIR]
     public class DefaultSample : MonoBehaviour
     {
         // Default
-
-        [SerializeField]
-        private AnimationCurve _defaultAnimationCurve;
+        
         [Inspect]
-        public AnimationCurve DefaultAnimationCurve
-        {
-            get
-            {
-                return _defaultAnimationCurve;
-            }
-            set
-            {
-                _defaultAnimationCurve = value;
-            }
-        }
+        // This is implemented as a field to show that fields work as well.
+        public AnimationCurve DefaultAnimationCurve;
 
 
 

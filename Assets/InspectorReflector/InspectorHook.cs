@@ -5,8 +5,7 @@ namespace InspectorReflector
     [CustomEditor(typeof(object), true)]
     public class InspectorHook : Editor
     {
-        private static int? _ptr;
-        private static TransientData _transientData;
+        private static object _lastTarget;
 
 
         public override void OnInspectorGUI()
@@ -14,28 +13,27 @@ namespace InspectorReflector
             object obj = target;
 
             if(obj == null)
+            {
+                _lastTarget = null;
                 return;
-
-            if(_ptr == null)
-            {
-                _ptr = obj.GetHashCode();
-                _transientData = new TransientData();
             }
-            else if(_ptr != obj.GetHashCode())
+
+            if(_lastTarget == null)
             {
-                _transientData = new TransientData();
+                _lastTarget = obj;
+                // Set transient data to null.
+            }
+            else if(_lastTarget.Equals(obj) == false)
+            {
+                // Create new transient data.
             }
 
             InspectorDrawer drawer = new InspectorDrawer();
 
             if(drawer.ShouldReflectInspector(obj))
-            {
-                drawer.ReflectInspector(obj, _transientData);
-            }
+                drawer.ReflectInspector(obj);
             else
-            {
                 DrawDefaultInspector();
-            }
         }
     }
 }
