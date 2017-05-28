@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
-using UnityEngine;
 
-namespace InspectorReflector
+namespace InspectorReflector.Implementation
 {
     public class PropertyInfoAndInspectAttr : MemberInfoAndInspectAttr
     {

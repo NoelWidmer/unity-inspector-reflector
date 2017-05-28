@@ -149,29 +149,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d32fd4662240b4ea67671eb1b0f215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultAnimationCurve:
+  _defaultAnimationCurve:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _defaultBool: 0
-  _defaultByte: 0
-  _defaultBounds:
+  DefaultBool: 0
+  DefaultByte: 0
+  DefaultBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
-  _defaultChar: 0
-  _defaultColor: {r: 0, g: 0, b: 0, a: 0}
-  _defaultDouble: 0
-  _defaultEnum: 0
-  _defaultFlagEnum: 0
-  _defaultFloat: 0
-  _defaultInt: 0
-  _defaultLayerMask:
+  DefaultChar: 0
+  DefaultColor: {r: 0, g: 0, b: 0, a: 0}
+  DefaultDouble: 0
+  DefaultEnum: 0
+  DefaultFlagEnum: 0
+  DefaultFloat: 0
+  DefaultInt: 0
+  DefaultLayerMask:
     serializedVersion: 2
     m_Bits: 0
-  _defaultLong: 0
-  _defaultRect:
+  DefaultLong: 0
+  DefaultRect:
     serializedVersion: 2
     x: 0
     y: 0
@@ -183,15 +183,15 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
-  _defaultSByte: 0
-  _defaultShort: 0
-  _defaultString: 
-  _defaultUInt: 0
-  _defaultULong: 0
-  _defaultUShort: 0
-  _defaultVector2: {x: 0, y: 0}
-  _defaultVector3: {x: 0, y: 0, z: 0}
-  _defaultVector4: {x: 0, y: 0, z: 0, w: 0}
+  DefaultSByte: 0
+  DefaultShort: 0
+  DefaultString: 
+  DefaultUInt: 0
+  DefaultULong: 0
+  DefaultUShort: 0
+  DefaultVector2: {x: 0, y: 0}
+  DefaultVector3: {x: 0, y: 0, z: 0}
+  DefaultVector4: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &270483694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,15 +203,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcfd5439c5de904380fb91d7c519146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sliderByte: 32
-  _delayedDouble: 125869874
-  _sliderDouble: 0
-  _delayedFloat: 0
-  _sliderFloat: 0.653
-  _delayedInt: 0
-  _sliderInt: 100
-  _dropableObject: {fileID: 0}
-  _dropableObjectAllowSceneObjects: {fileID: 0}
+  SliderByte: 0
+  DelayedDouble: 0
+  SliderDouble: 0
+  DelayedFloat: 0
+  SliderFloat: 0
+  DelayedInt: 0
+  SliderInt: 0
+  DropableObject: {fileID: 0}
+  DropableObjectAllowSceneObjects: {fileID: 0}
   _rectReadonlyByIR:
     serializedVersion: 2
     x: 0
@@ -224,9 +224,9 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
-  _sliderSByte: 22
-  _sliderShort: -14
-  _delayedString: 
-  _tagString: 
-  _areaString: 
-  _sliderUShort: 0
+  SliderSByte: 0
+  SliderShort: 0
+  DelayedString: 
+  TagString: 
+  AreaString: 
+  SliderUShort: 0

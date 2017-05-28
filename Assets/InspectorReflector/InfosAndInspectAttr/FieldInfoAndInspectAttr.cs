@@ -1,43 +1,45 @@
 ﻿using System.Reflection;
-using InspectorReflector;
 
-public class FieldInfoAndInspectAttr : MemberInfoAndInspectAttr
+namespace InspectorReflector.Implementation
 {
-    public FieldInfoAndInspectAttr(FieldInfo info, InspectAttribute inspectAttribute) : base(info, info.FieldType, inspectAttribute) 
+    public class FieldInfoAndInspectAttr : MemberInfoAndInspectAttr
     {
-    }
-
-    public new FieldInfo Info
-    {
-        get
+        public FieldInfoAndInspectAttr(FieldInfo info, InspectAttribute inspectAttribute) : base(info, info.FieldType, inspectAttribute)
         {
-            return (FieldInfo)base.Info;
         }
-    }
 
-    public override bool CanRead
-    {
-        get
+        public new FieldInfo Info
         {
-            return true;
+            get
+            {
+                return (FieldInfo)base.Info;
+            }
         }
-    }
 
-    public override bool CanWrite
-    {
-        get
+        public override bool CanRead
         {
-            return Info.IsInitOnly == false && Info.IsLiteral == false;
+            get
+            {
+                return true;
+            }
         }
-    }
 
-    public override object GetValue(object target)
-    {
-        return Info.GetValue(target);
-    }
+        public override bool CanWrite
+        {
+            get
+            {
+                return Info.IsInitOnly == false && Info.IsLiteral == false;
+            }
+        }
 
-    public override void SetValue(object target, object newValue)
-    {
-        Info.SetValue(target, newValue);
+        public override object GetValue(object target)
+        {
+            return Info.GetValue(target);
+        }
+
+        public override void SetValue(object target, object newValue)
+        {
+            Info.SetValue(target, newValue);
+        }
     }
 }

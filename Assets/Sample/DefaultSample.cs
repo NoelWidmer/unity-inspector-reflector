@@ -7,242 +7,68 @@ namespace InspectorReflector.Sample
     public class DefaultSample : MonoBehaviour
     {
         // Default
+
+        // This is implemented as a property to show that properties work as well.
+        [SerializeField]
+        private AnimationCurve _defaultAnimationCurve;
+        [Inspect]
+        public AnimationCurve DefaultAnimationCurve
+        {
+            get
+            {
+                return _defaultAnimationCurve;
+            }
+            set
+            {
+                _defaultAnimationCurve = value;
+            }
+        }
+
+
+
+        [Inspect]
+        public bool DefaultBool;
+
+        [Inspect]
+        public byte DefaultByte;
         
         [Inspect]
-        // This is implemented as a field to show that fields work as well.
-        public AnimationCurve DefaultAnimationCurve;
+        public Bounds DefaultBounds;
 
-
-
-        [SerializeField]
-        private bool _defaultBool;
         [Inspect]
-        public bool DefaultBool
-        {
-            get
-            {
-                return _defaultBool;
-            }
-            set
-            {
-                _defaultBool = value;
-            }
-        }
+        public char DefaultChar;
 
-
-
-        [SerializeField]
-        private byte _defaultByte;
         [Inspect]
-        public byte DefaultByte
-        {
-            get
-            {
-                return _defaultByte;
-            }
-            set
-            {
-                _defaultByte = value;
-            }
-        }
+        public Color DefaultColor;
 
-
-
-        [SerializeField]
-        private Bounds _defaultBounds;
         [Inspect]
-        public Bounds DefaultBounds {
-            get
-            {
-                return _defaultBounds;
-            }
-            set
-            {
-                _defaultBounds = value;
-            }
-        }
+        public double DefaultDouble;
 
-
-
-        [SerializeField]
-        private char _defaultChar;
         [Inspect]
-        public char DefaultChar
-        {
-            get
-            {
-                return _defaultChar;
-            }
-            set
-            {
-                _defaultChar = value;
-            }
-        }
+        public Enum DefaultEnum;
 
-
-
-        [SerializeField]
-        private Color _defaultColor;
         [Inspect]
-        public Color DefaultColor { get
-            {
-                return _defaultColor;
-            }
-            set
-            {
-                _defaultColor = value;
-            }
-        }
+        public Flags DefaultFlagEnum;
 
-
-
-        [SerializeField]
-        private double _defaultDouble;
         [Inspect]
-        public double DefaultDouble
-        {
-            get
-            {
-                return _defaultDouble;
-            }
-            set
-            {
-                _defaultDouble = value;
-            }
-        }
+        public float DefaultFloat;
 
-
-
-        [SerializeField]
-        private Enum _defaultEnum;
         [Inspect]
-        public Enum DefaultEnum
-        {
-            get
-            {
-                return _defaultEnum;
-            }
-            set
-            {
-                _defaultEnum = value;
-            }
-        }
+        public int DefaultInt;
 
-        [SerializeField]
-        private Flags _defaultFlagEnum;
         [Inspect]
-        public Flags DefaultFlagEnum
-        {
-            get
-            {
-                return _defaultFlagEnum;
-            }
-            set
-            {
-                _defaultFlagEnum = value;
-            }
-        }
+        public LayerMask DefaultLayerMask;
 
-
-
-        [SerializeField]
-        private float _defaultFloat;
         [Inspect]
-        public float DefaultFloat
-        {
-            get
-            {
-                return _defaultFloat;
-            }
-            set
-            {
-                _defaultFloat = value;
-            }
-        }
+        public long DefaultLong;
 
-
-
-        [SerializeField]
-        private int _defaultInt;
         [Inspect]
-        public int DefaultInt {
-            get
-            {
-                return _defaultInt;
-            }
-            set
-            {
-                _defaultInt = value;
-            }
-        }
+        public ObjectSample DefaultObjectSample = new ObjectSample();
 
-
-
-        [SerializeField]
-        private LayerMask _defaultLayerMask;
         [Inspect]
-        public LayerMask DefaultLayerMask
-        {
-            get
-            {
-                return _defaultLayerMask;
-            }
-            set
-            {
-                _defaultLayerMask = value;
-            }
-        }
+        public Rect DefaultRect;
 
 
-
-        [SerializeField]
-        private long _defaultLong;
-        [Inspect]
-        public long DefaultLong
-        {
-            get
-            {
-                return _defaultLong;
-            }
-            set
-            {
-                _defaultLong = value;
-            }
-        }
-
-
-
-        [SerializeField]
-        private ObjectSample _defaultObjectSample = new ObjectSample();
-        [Inspect]
-        public ObjectSample DefaultObjectSample
-        {
-            get
-            {
-                return _defaultObjectSample;
-            }
-            set
-            {
-                _defaultObjectSample = value;
-            }
-        }
-
-
-
-        [SerializeField]
-        private Rect _defaultRect;
-        [Inspect]
-        public Rect DefaultRect
-        {
-            get
-            {
-                return _defaultRect;
-            }
-            set
-            {
-                _defaultRect = value;
-            }
-        }
 
         [SerializeField]
         private Rect _defaultRectReadonlyByCode;
@@ -257,156 +83,32 @@ namespace InspectorReflector.Sample
 
 
 
-        [SerializeField]
-        private sbyte _defaultSByte;
         [Inspect]
-        public sbyte DefaultSByte
-        {
-            get
-            {
-                return _defaultSByte;
-            }
-            set
-            {
-                _defaultSByte = value;
-            }
-        }
+        public sbyte DefaultSByte;
 
-
-
-        [SerializeField]
-        private short _defaultShort;
         [Inspect]
-        public short DefaultShort
-        {
-            get
-            {
-                return _defaultShort;
-            }
-            set
-            {
-                _defaultShort = value;
-            }
-        }
-
-
-
-        [SerializeField]
-        private string _defaultString;
+        public short DefaultShort;
+        
         [Inspect]
-        public string DefaultString
-        {
-            get
-            {
-                return _defaultString;
-            }
-            set
-            {
-                _defaultString = value;
-            }
-        }
-
-
-
-        [SerializeField]
-        private uint _defaultUInt;
+        public string DefaultString;
+        
         [Inspect]
-        public uint DefaultUInt
-        {
-            get
-            {
-                return _defaultUInt;
-            }
-            set
-            {
-                _defaultUInt = value;
-            }
-        }
+        public uint DefaultUInt;
 
-
-
-        [SerializeField]
-        private ulong _defaultULong;
         [Inspect]
-        public ulong DefaultULong
-        {
-            get
-            {
-                return _defaultULong;
-            }
-            set
-            {
-                _defaultULong = value;
-            }
-        }
+        public ulong DefaultULong;
 
-
-
-        [SerializeField]
-        private ushort _defaultUShort;
         [Inspect]
-        public ushort DefaultUShort
-        {
-            get
-            {
-                return _defaultUShort;
-            }
-            set
-            {
-                _defaultUShort = value;
-            }
-        }
+        public ushort DefaultUShort;
 
-
-
-        [SerializeField]
-        private Vector2 _defaultVector2;
         [Inspect]
-        public Vector2 DefaultVector2
-        {
-            get
-            {
-                return _defaultVector2;
-            }
-            set
-            {
-                _defaultVector2 = value;
-            }
-        }
+        public Vector2 DefaultVector2;
 
-
-
-        [SerializeField]
-        private Vector3 _defaultVector3;
         [Inspect]
-        public Vector3 DefaultVector3
-        {
-            get
-            {
-                return _defaultVector3;
-            }
-            set
-            {
-                _defaultVector3 = value;
-            }
-        }
+        public Vector3 DefaultVector3;
 
-
-
-        [SerializeField]
-        private Vector4 _defaultVector4;
         [Inspect]
-        public Vector4 DefaultVector4
-        {
-            get
-            {
-                return _defaultVector4;
-            }
-            set
-            {
-                _defaultVector4 = value;
-            }
-        }
+        public Vector4 DefaultVector4;
 
 
         
@@ -422,6 +124,8 @@ namespace InspectorReflector.Sample
         }
 
 
+
+
         [Flags]
         public enum Flags
         {
@@ -431,13 +135,13 @@ namespace InspectorReflector.Sample
             Eight = 8
         }
 
+
+
         public class ObjectSample
         {
             [Inspect]
             public string Name;
-
-
-
+            
             [SerializeField]
             private int _exp;
             [Inspect]
@@ -453,9 +157,7 @@ namespace InspectorReflector.Sample
                     _level = (int)Mathf.Floor(value / 100f);
                 }
             }
-
-
-
+            
             [SerializeField]
             private int _level;
             [Inspect]

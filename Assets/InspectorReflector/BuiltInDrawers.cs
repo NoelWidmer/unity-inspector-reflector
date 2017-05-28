@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorReflector
+namespace InspectorReflector.Implementation
 {
     public static class BuiltInDrawers
     {

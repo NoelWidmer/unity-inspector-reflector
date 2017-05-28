@@ -5,140 +5,32 @@ namespace InspectorReflector.Sample
     [EnableIR]
     public class CustomizedSample : MonoBehaviour
     {
-        [SerializeField]
-        private byte _sliderByte;
         [InspectAsByteSlider(0, 100)]
-        public byte SliderByte
-        {
-            get
-            {
-                return _sliderByte;
-            }
-            set
-            {
-                _sliderByte = value;
-            }
-        }
+        public byte SliderByte;
 
-        [SerializeField]
-        private double _delayedDouble;
         [Inspect(InspectionType.DelayedDouble)]
-        public double DelayedDouble
-        {
-            get
-            {
-                return _delayedDouble;
-            }
-            set
-            {
-                _delayedDouble = value;
-            }
-        }
+        public double DelayedDouble;
 
-        [SerializeField]
-        private double _sliderDouble;
         [InspectAsFloatSlider(0f, 1f)]
-        public double SliderDouble
-        {
-            get
-            {
-                return _sliderDouble;
-            }
-            set
-            {
-                _sliderDouble = value;
-            }
-        }
+        public double SliderDouble;
 
-        [SerializeField]
-        private float _delayedFloat;
         [Inspect(InspectionType.DelayedFloat)]
-        public float DelayedFloat
-        {
-            get
-            {
-                return _delayedFloat;
-            }
-            set
-            {
-                _delayedFloat = value;
-            }
-        }
+        public float DelayedFloat;
 
-        [SerializeField]
-        private float _sliderFloat;
         [InspectAsFloatSlider(0f, 1f)]
-        public float SliderFloat
-        {
-            get
-            {
-                return _sliderFloat;
-            }
-            set
-            {
-                _sliderFloat = value;
-            }
-        }
+        public float SliderFloat;
 
-        [SerializeField]
-        private int _delayedInt;
         [Inspect(InspectionType.DelayedInt)]
-        public int DelayedInt
-        {
-            get
-            {
-                return _delayedInt;
-            }
-            set
-            {
-                _delayedInt = value;
-            }
-        }
+        public int DelayedInt;
 
-        [SerializeField]
-        private int _sliderInt;
         [InspectAsIntSlider(-100, 100)]
-        public int SliderInt
-        {
-            get
-            {
-                return _sliderInt;
-            }
-            set
-            {
-                _sliderInt = value;
-            }
-        }
+        public int SliderInt;
 
-        [SerializeField]
-        private GameObject _dropableObject;
         [Inspect(InspectionType.DropableObject)]
-        public GameObject DropableObject
-        {
-            get
-            {
-                return _dropableObject;
-            }
-            set
-            {
-                _dropableObject = value;
-            }
-        }
+        public GameObject DropableObject;
 
-        [SerializeField]
-        private GameObject _dropableObjectAllowSceneObjects;
         [Inspect(InspectionType.DropableObjectAllowSceneObjects)]
-        public GameObject DropableObjectAllowSceneObjects
-        {
-            get
-            {
-                return _dropableObjectAllowSceneObjects;
-            }
-            set
-            {
-                _dropableObjectAllowSceneObjects = value;
-            }
-        }
+        public GameObject DropableObjectAllowSceneObjects;
 
         [SerializeField]
         private Rect _rectReadonlyByIR;
@@ -170,94 +62,22 @@ namespace InspectorReflector.Sample
             }
         }
 
-        [SerializeField]
-        private sbyte _sliderSByte;
         [InspectAsSByteSlider(-100, 100)]
-        public sbyte SliderSByte
-        {
-            get
-            {
-                return _sliderSByte;
-            }
-            set
-            {
-                _sliderSByte = value;
-            }
-        }
+        public sbyte SliderSByte;
 
-        [SerializeField]
-        private short _sliderShort;
         [InspectAsShortSlider(-100, 100)]
-        public short SliderShort
-        {
-            get
-            {
-                return _sliderShort;
-            }
-            set
-            {
-                _sliderShort = value;
-            }
-        }
+        public short SliderShort;
 
-        [SerializeField]
-        private string _delayedString;
         [Inspect(InspectionType.DelayedString)]
-        public string DelayedString
-        {
-            get
-            {
-                return _delayedString;
-            }
-            set
-            {
-                _delayedString = value;
-            }
-        }
+        public string DelayedString;
 
-        [SerializeField]
-        private string _tagString;
         [Inspect(InspectionType.TagString)]
-        public string TagString
-        {
-            get
-            {
-                return _tagString;
-            }
-            set
-            {
-                _tagString = value;
-            }
-        }
+        public string TagString;
 
-        [SerializeField]
-        private string _areaString;
         [Inspect(InspectionType.AreaString)]
-        public string AreaString
-        {
-            get
-            {
-                return _areaString;
-            }
-            set
-            {
-                _areaString = value;
-            }
-        }
+        public string AreaString;
 
-        [SerializeField]
-        private ushort _sliderUShort;
         [InspectAsUShortSlider(0, 100)]
-        public ushort SliderUShort
-        {
-            get
-            {
-                return _sliderUShort;
-            }
-            set
-            {
-                _sliderUShort = value;
-            }
-        }
+        public ushort SliderUShort;
     }
 }

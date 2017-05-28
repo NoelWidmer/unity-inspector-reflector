@@ -5,9 +5,9 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorReflector
+namespace InspectorReflector.Implementation
 {
-    public class InspectorDrawer
+    public class IRDrawer
     {
         #region Static
 
@@ -15,7 +15,7 @@ namespace InspectorReflector
 
 
 
-        static InspectorDrawer()
+        static IRDrawer()
         {
             _drawersLookup = new Dictionary<string, Func<MemberInfoAndInspectAttr, object, object>>();
 
@@ -69,7 +69,7 @@ namespace InspectorReflector
 
 
 
-        public bool ShouldReflectInspector(object target)
+        public bool SupportsIRInspection(object target)
         {
             if(target == null)
                 throw new ArgumentNullException("target");
