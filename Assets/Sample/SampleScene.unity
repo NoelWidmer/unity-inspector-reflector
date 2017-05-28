@@ -151,24 +151,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultAnimationCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   _defaultBool: 0
   _defaultByte: 0
   _defaultBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  _defaultChar: 0
-  _defaultColor: {r: 0, g: 0, b: 0, a: 0}
-  _defaultDouble: 0
-  _defaultEnum: 0
-  _flagEnum: 0
+    m_Center: {x: 2.4, y: 0, z: 1.47}
+    m_Extent: {x: 0, y: 1.26, z: 0}
+  _defaultChar: 52
+  _defaultColor: {r: 1, g: 0.375, b: 0.375, a: 0}
+  _defaultDouble: 123
+  _defaultEnum: 4
+  _defaultFlagEnum: -4
   _defaultFloat: 0
-  _defaultInt: 0
-  _defaultLong: 0
+  _defaultInt: -64
+  _defaultLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  _defaultLong: -583
   _defaultRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  _defaultRectReadonlyByCode:
     serializedVersion: 2
     x: 0
     y: 0
@@ -178,23 +199,11 @@ MonoBehaviour:
   _defaultShort: 0
   _defaultString: 
   _defaultUInt: 0
-  _defaultULong: 0
+  _defaultULong: 89655
   _defaultUShort: 0
   _defaultVector2: {x: 0, y: 0}
   _defaultVector3: {x: 0, y: 0, z: 0}
   _defaultVector4: {x: 0, y: 0, z: 0, w: 0}
-  _rectReadonlyByIR:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
-  _rectReadonlyByCode:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 0
-    height: 0
 --- !u!114 &270483694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,9 +215,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fcfd5439c5de904380fb91d7c519146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayedDouble: 0
+  _sliderByte: 0
+  _delayedDouble: 123
+  _sliderDouble: 0
   _delayedFloat: 0
+  _sliderFloat: 0
+  _delayedInt: 0
+  _sliderInt: -34
   _dropableObject: {fileID: 0}
+  _dropableObjectAllowSceneObjects: {fileID: 0}
+  _rectReadonlyByIR:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  _rectReadonlySelectableByIR:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  _sliderSByte: 22
+  _sliderShort: -14
   _delayedString: 
   _tagString: 
   _areaString: 
+  _sliderUShort: 0

@@ -126,6 +126,21 @@ namespace InspectorReflector.Sample
         }
 
         [SerializeField]
+        private GameObject _dropableObjectAllowSceneObjects;
+        [Inspect(InspectionType.DropableObjectAllowSceneObjects)]
+        public GameObject DropableObjectAllowSceneObjects
+        {
+            get
+            {
+                return _dropableObjectAllowSceneObjects;
+            }
+            set
+            {
+                _dropableObjectAllowSceneObjects = value;
+            }
+        }
+
+        [SerializeField]
         private Rect _rectReadonlyByIR;
         [Inspect(InspectionType.Readonly)]
         public Rect RectReadonlyByIR
