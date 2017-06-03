@@ -48,9 +48,6 @@ namespace InspectorReflector.Sample
         public Enum DefaultEnum;
 
         [Inspect]
-        public Flags DefaultFlagEnum;
-
-        [Inspect]
         public float DefaultFloat;
 
         [Inspect]
@@ -67,21 +64,6 @@ namespace InspectorReflector.Sample
 
         [Inspect]
         public Rect DefaultRect;
-
-
-
-        [SerializeField]
-        private Rect _defaultRectReadonlyByCode;
-        [Inspect]
-        public Rect DefaultRectReadonlyByCode
-        {
-            get
-            {
-                return _defaultRectReadonlyByCode;
-            }
-        }
-
-
 
         [Inspect]
         public sbyte DefaultSByte;
@@ -111,7 +93,25 @@ namespace InspectorReflector.Sample
         public Vector4 DefaultVector4;
 
 
-        
+
+        // TODO dispaly a tile
+
+        [Inspect]
+        public Flags DefaultFlagEnum;
+
+        [SerializeField]
+        private Rect _defaultRectReadonlyByCode;
+        [Inspect]
+        public Rect DefaultRectReadonlyByCode
+        {
+            get
+            {
+                return _defaultRectReadonlyByCode;
+            }
+        }
+
+
+
         // Nested types.
 
         public enum Enum
