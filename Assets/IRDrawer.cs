@@ -10,368 +10,331 @@ namespace InspectorReflector.Implementation
 {
     public class IRDrawer
     {
-        #region Static
-
-        public static readonly Dictionary<string, Func<MemberInfoAndInspectAttr, object, object>> _drawersLookup;
-
-
+        private static readonly Dictionary<Type, IDrawer> _drawers = new Dictionary<Type, IDrawer>();
 
         static IRDrawer()
         {
-            _drawersLookup = new Dictionary<string, Func<MemberInfoAndInspectAttr, object, object>>();
-
-            _drawersLookup.Add("$", BuiltInDrawers.DrawEnum);
-            
-            RegisterDrawer<AnimationCurve>(BuiltInDrawers.DrawAnimationCurve);
-            RegisterDrawer<bool>(BuiltInDrawers.DrawBool);
-            RegisterDrawer<byte>(BuiltInDrawers.DrawByte);
-            RegisterDrawer<Bounds>(BuiltInDrawers.DrawBounds);
-            RegisterDrawer<char>(BuiltInDrawers.DrawChar);
-            RegisterDrawer<Color>(BuiltInDrawers.DrawColor);
-            RegisterDrawer<double>(BuiltInDrawers.DrawDouble);
-            RegisterDrawer<float>(BuiltInDrawers.DrawFloat);
-            RegisterDrawer<int>(BuiltInDrawers.DrawInt);
-            RegisterDrawer<LayerMask>(BuiltInDrawers.DrawLayerMask);
-            RegisterDrawer<long>(BuiltInDrawers.DrawLong);
-            RegisterDrawer<Rect>(BuiltInDrawers.DrawRect);
-            RegisterDrawer<sbyte>(BuiltInDrawers.DrawSByte);
-            RegisterDrawer<short>(BuiltInDrawers.DrawShort);
-            RegisterDrawer<string>(BuiltInDrawers.DrawString);
-            RegisterDrawer<uint>(BuiltInDrawers.DrawUInt);
-            RegisterDrawer<ulong>(BuiltInDrawers.DrawULong);
-            RegisterDrawer<ushort>(BuiltInDrawers.DrawUShort);
-            RegisterDrawer<Vector2>(BuiltInDrawers.DrawVector2);
-            RegisterDrawer<Vector3>(BuiltInDrawers.DrawVector3);
-            RegisterDrawer<Vector4>(BuiltInDrawers.DrawVector4);
+            RegisterDrawer(new AnimationCurveDrawer(), false);
+            RegisterDrawer(new BooleanDrawer(), false);
+            RegisterDrawer(new BoundsDrawer(), false);
+            RegisterDrawer(new ByteDrawer(), false);
+            RegisterDrawer(new CharacterDrawer(), false);
+            RegisterDrawer(new ColorDrawer(), false);
+            RegisterDrawer(new DoubleDrawer(), false);
+            RegisterDrawer(new FloatDrawer(), false);
+            RegisterDrawer(new IntegerDrawer(), false);
+            RegisterDrawer(new LayerMaskDrawer(), false);
+            RegisterDrawer(new LongDrawer(), false);
+            RegisterDrawer(new RectangleDrawer(), false);
+            RegisterDrawer(new ShortDrawer(), false);
+            RegisterDrawer(new SignedByteDrawer(), false);
+            RegisterDrawer(new StringDrawer(), false);
+            RegisterDrawer(new UnsignedIntegerDrawer(), false);
+            RegisterDrawer(new UnsignedLongDrawer(), false);
+            RegisterDrawer(new UnsignedShortDrawer(), false);
+            RegisterDrawer(new Vector2Drawer(), false);
+            RegisterDrawer(new Vector3Drawer(), false);
+            RegisterDrawer(new Vector4Drawer(), false);
         }
 
-
-
-        public static void RegisterDrawer<T>(Func<MemberInfoAndInspectAttr, object, object> drawer, bool overwrite = false)
+        public static void RegisterDrawer(IDrawer drawer, bool overwritePreviousDrawer)
         {
-            string aqtn = typeof(T).AssemblyQualifiedName;
-
-            if(_drawersLookup.ContainsKey(aqtn))
-            {
-                if(overwrite == false)
-                    throw new InvalidOperationException("A drawer for the following type has already been registered: " + typeof(T).FullName);
-
-                if(drawer != null)
-                    _drawersLookup.Remove(aqtn);
-            }
-
             if(drawer == null)
-                throw new ArgumentNullException("drawer");
+                throw new ArgumentNullException(nameof(drawer));
 
-            _drawersLookup.Add(aqtn, drawer);
+            var targetType = drawer.TargetType;
+
+            if(_drawers.ContainsKey(targetType))
+            {
+                if(overwritePreviousDrawer == false)
+                    throw new InvalidOperationException("A drawer for the following type has already been registered: " + targetType);
+
+                _drawers[targetType] = drawer;
+            }
+            else
+            {
+                _drawers.Add(targetType, drawer);
+            }
         }
 
-        #endregion
-
-
-
-        /// <summary>
-        ///     Returns true if <paramref name="targetType"/> can be drawn with the IR.
-        /// </summary>
-        /// <param name="targetType">The type to check compatability for.</param>
-        public bool SupportsType(Type targetType)
+        public bool ShouldDrawObjectOfType(Type targetType)
         {
             if(targetType == null)
                 throw new ArgumentNullException(nameof(targetType));
             
-            object[] attributes = targetType.GetCustomAttributes(typeof(EnableIRAttribute), false);
+            var attributes = targetType.GetCustomAttributes(typeof(EnableIRAttribute), false);
 
             if(attributes == null || attributes.Length == 0)
+            {
                 return false;
+            }
             else
+            {
                 return true;
+            }
         }
-
-
-
-
-        public Dictionary<string, bool> DrawInspector(object target)
-        {
-            Dictionary<string, bool> foldoutData = new Dictionary<string, bool>();
-            DrawInspector(target, foldoutData);
-            return foldoutData;
-        }
-
-
-
-        /// <summary>
-        ///     Draws <paramref name="target"/> with the IR.
-        /// </summary>
-        /// <param name="target">The instance to draw the inspector for.</param>
-        public void DrawInspector(object target, Dictionary<string, bool> foldoutData)
+        
+        public void Draw(object target, Dictionary<string, bool> folderPathToIsExpanded)
         {
             if(target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            if(foldoutData == null)
-                throw new ArgumentNullException(nameof(foldoutData));
+            if(folderPathToIsExpanded == null)
+                throw new ArgumentNullException(nameof(folderPathToIsExpanded));
       
-            DrawInspectorRecursable(target, foldoutData, new Stack<string>());
+            Draw(target, folderPathToIsExpanded, new Stack<string>());
         }
 
-
-
-        private void DrawInspectorRecursable(object target, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
+        private void Draw(object target, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
         {
-            // Get all fields and properties to consider.
-            var fields2Consider = new List<FieldInfo>();
-            var properties2Consider = new List<PropertyInfo>();
-            {
-                BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-                Type targetType = target.GetType();
+            var (fields, properties) = GetMembers(target);
 
-                FieldInfo[] publicInstanceFields = targetType.GetFields(flags);
-                if(publicInstanceFields != null && publicInstanceFields.Length > 0)
-                    fields2Consider = publicInstanceFields.ToList();
+            properties = GetNonIndexedProperties(properties);
 
-                PropertyInfo[] publicInstanceProperties = targetType.GetProperties(flags);
-                if(publicInstanceProperties != null || publicInstanceProperties.Length > 0)
-                    properties2Consider = publicInstanceProperties.ToList();
+            var fieldsToInspect = GetFieldsWithInspectAttribute(fields);
+            var propertiesToInspect = GetPropertiesWithInspectAttribute(properties);
+            var membersToInspect = fieldsToInspect.Union(propertiesToInspect).ToList();
 
-                if(fields2Consider.Count + properties2Consider.Count == 0)
-                    return;
-            }
-
-            // Do not consider indexed properties.
-            if(properties2Consider != null)
-            {
-                var nonIndexedProperties2Consider = new List<PropertyInfo>();
-
-                foreach(var property2Consider in properties2Consider)
-                {
-                    ParameterInfo[] propertyIndexParams = property2Consider.GetIndexParameters();
-
-                    if(propertyIndexParams == null || propertyIndexParams.Length == 0)
-                        nonIndexedProperties2Consider.Add(property2Consider);
-                }
-
-                if(nonIndexedProperties2Consider.Count > 0)
-                {
-                    properties2Consider = nonIndexedProperties2Consider;
-                }
-                else
-                {
-                    if(fields2Consider.Count == 0)
-                        return;
-
-                    properties2Consider.Clear();
-                }
-            }
-
-            var fieldsAndPropertiesToDraw = new List<MemberInfoAndInspectAttr>();
-
-            // Draw only fields with the inspect attribute.
-            if(fields2Consider != null)
-            {
-                foreach(var field2Consider in fields2Consider)
-                {
-                    object[] inspectAttributes = field2Consider.GetCustomAttributes(typeof(InspectAttribute), false);
-
-                    if(inspectAttributes != null && inspectAttributes.Length > 0)
-                    {
-                        if(inspectAttributes.Length == 1)
-                        {
-                            fieldsAndPropertiesToDraw.Add(new FieldInfoAndInspectAttr(field2Consider, (InspectAttribute)inspectAttributes[0]));
-                        }
-                        else
-                        {
-                            Warn($"Found multiple attributes of type {typeof(InspectAttribute).Name} on {field2Consider.DeclaringType.FullName}.{field2Consider.Name}");
-                        }
-                    }
-                }
-            }
-
-            // Draw only properties with the inspect attribute.
-            if(properties2Consider != null)
-            {
-                foreach(var property2Consider in properties2Consider)
-                {
-                    object[] inspectAttributes = property2Consider.GetCustomAttributes(typeof(InspectAttribute), false);
-
-                    if(inspectAttributes != null && inspectAttributes.Length > 0)
-                    {
-                        if(inspectAttributes.Length == 1)
-                        {
-                            fieldsAndPropertiesToDraw.Add(new PropertyInfoAndInspectAttr(property2Consider, (InspectAttribute)inspectAttributes[0]));
-                        }
-                        else
-                        {
-                            Warn($"Found multiple attributes of type {typeof(InspectAttribute).Name} on {property2Consider.DeclaringType.FullName}.{property2Consider.Name}");
-                        }
-                    }
-                }
-            }
-
-            if(fieldsAndPropertiesToDraw.Count == 0)
-                return;
-
-            DrawFieldsAndProperties(target, fieldsAndPropertiesToDraw, foldoutData, pathStack);
+            Draw(target, membersToInspect, folderPathToIsExpanded, pathStack);
         }
 
-
-
-        /// <summary>
-        ///     Draws all the fields and properties in <paramref name="fieldOrPropertyInfos"/>.
-        /// </summary>
-        /// <param name="target">The instance to draw.</param>
-        /// <param name="fieldOrPropertyInfos">The fields and properties to draw.</param>
-        private void DrawFieldsAndProperties(object target, IEnumerable<MemberInfoAndInspectAttr> fieldOrPropertyInfos, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
+        private (List<FieldInfo> fields, List<PropertyInfo> properties) GetMembers(object target)
         {
-            foreach(var fieldOrPropertyInfo in fieldOrPropertyInfos)
+            var fields = new List<FieldInfo>();
+            var properties = new List<PropertyInfo>();
+
+            var flags = BindingFlags.Public | BindingFlags.Instance;
+            var targetType = target.GetType();
+
+            var fields_ = targetType.GetFields(flags);
+            var properties_ = targetType.GetProperties(flags);
+
+            if(fields_ != null)
+                fields = fields_.ToList();
+
+            if(properties_ != null)
+                properties = properties_.ToList();
+
+            return (fields, properties);
+        }
+
+        private List<PropertyInfo> GetNonIndexedProperties(List<PropertyInfo> properties)
+        {
+            var nonIndexedProperties = new List<PropertyInfo>();
+
+            foreach(var property in properties)
             {
-                // Push field or property name to path.
-                pathStack.Push(fieldOrPropertyInfo.Info.Name);
+                var propertyIndexParams = property.GetIndexParameters();
 
-                try
+                if(propertyIndexParams == null || propertyIndexParams.Length == 0)
+                    nonIndexedProperties.Add(property);
+            }
+
+            return nonIndexedProperties;
+        }
+
+        private List<IMemberInspectionInfo> GetFieldsWithInspectAttribute(List<FieldInfo> fields)
+        {
+            var members = new List<IMemberInspectionInfo>();
+
+            foreach(var field in fields)
+            {
+                var attrs = field.GetCustomAttributes(typeof(InspectAttribute), false);
+
+                if(attrs != null && attrs.Length > 0)
                 {
-                    InspectionKind inspectionKind = fieldOrPropertyInfo.InspectAttribute.InspectionKind;
-                    MemberInfo memberInfo = fieldOrPropertyInfo.Info;
-
-                    // Warn if we cannot read the value.
-                    if(fieldOrPropertyInfo.CanRead == false)
+                    if(attrs.Length == 1)
                     {
-                        Warn($"The following field or property cannot be read from: {target.GetType().Name}.{memberInfo.Name}");
-                    }
-                    // If writing the value has been manually forbidden but the value should be selectable.
-                    else if(inspectionKind == InspectionKind.ReadonlySelectable)
-                    {
-                        if(ShouldDrawTypeAsList(fieldOrPropertyInfo.RealType))
-                        {
-                            Warn($"It doesn't make sense to draw an instance of {memberInfo.ReflectedType.Name} as {InspectionKind.ReadonlySelectable}. It will be drawn as {InspectionKind.Readonly} instead.");
-                            DrawIEnumerable(target, fieldOrPropertyInfo, true, foldoutData, pathStack);
-                        }
-                        else
-                        {
-                            // TODO Really draw references as selectable?
-                            EditorGUILayout.BeginHorizontal();
-                            EditorGUILayout.PrefixLabel(memberInfo.Name);
-                            string text = fieldOrPropertyInfo.GetValue(target).ToString();
-                            EditorGUILayout.SelectableLabel(text);
-                            EditorGUILayout.EndHorizontal();
-                        }
-                    }
-                    // If we cannot write the value or it has been manually forbidden.
-                    else if(inspectionKind == InspectionKind.Readonly || fieldOrPropertyInfo.CanWrite == false)
-                    {
-                        if(ShouldDrawTypeAsList(fieldOrPropertyInfo.RealType))
-                        {
-                            // Lists are only readonly on their surface.
-                            DrawIEnumerable(target, fieldOrPropertyInfo, true, foldoutData, pathStack);
-                        }
-                        else
-                        {
-                            // Create a readonly field.
-                            string text = fieldOrPropertyInfo.GetValue(target).ToString();
-                            EditorGUILayout.LabelField(memberInfo.Name, text);
-                        }
+                        members.Add(new FieldInspectionInfo(field, (InspectAttribute)attrs[0]));
                     }
                     else
                     {
-                        if(ShouldDrawTypeAsList(fieldOrPropertyInfo.RealType))
-                        {
-                            // Draw a list that can be modified.
-                            DrawIEnumerable(target, fieldOrPropertyInfo, false, foldoutData, pathStack);
-                        }
-                        else
-                        {
-                            object origValueOrRef = fieldOrPropertyInfo.GetValue(target);
-                            object newValueOrRef;
-
-                            Func<MemberInfoAndInspectAttr, object, object> drawer;
-
-                            if(fieldOrPropertyInfo.RealType.IsEnum)
-                            {
-                                newValueOrRef = _drawersLookup["$"](fieldOrPropertyInfo, origValueOrRef);
-                            }
-                            else
-                            {
-                                string aqtn = fieldOrPropertyInfo.RealType.AssemblyQualifiedName;
-
-                                if(_drawersLookup.TryGetValue(aqtn, out drawer))
-                                {
-                                    //TODO better null checking (string)
-                                    if(origValueOrRef != null || fieldOrPropertyInfo.RealType == typeof(string))
-                                    {
-                                        newValueOrRef = drawer(fieldOrPropertyInfo, origValueOrRef);
-                                    }
-                                    else
-                                    {
-                                        DrawNull(memberInfo.Name);
-                                        newValueOrRef = origValueOrRef;
-                                    }
-                                }
-                                else
-                                {
-                                    if(origValueOrRef != null && fieldOrPropertyInfo.RealType.IsValueType)
-                                    {
-                                        Warn("The following value-type has no drawer: " + memberInfo.DeclaringType.FullName + "." + memberInfo.Name);
-                                        newValueOrRef = origValueOrRef;
-                                    }
-                                    else
-                                    {
-                                        newValueOrRef = DrawReference(fieldOrPropertyInfo, origValueOrRef, foldoutData, pathStack);
-                                    }
-                                }
-                            }
-
-                            if(origValueOrRef != newValueOrRef)
-                                fieldOrPropertyInfo.SetValue(target, newValueOrRef);
-                        }
+                        Warn($"Found multiple attributes of type {typeof(InspectAttribute).Name} on {field.DeclaringType.FullName}.{field.Name}");
                     }
                 }
-                finally
+            }
+
+            return members;
+        }
+
+        private List<IMemberInspectionInfo> GetPropertiesWithInspectAttribute(List<PropertyInfo> properties)
+        {
+            var members = new List<IMemberInspectionInfo>();
+
+            foreach(var property in properties)
+            {
+                var attrs = property.GetCustomAttributes(typeof(InspectAttribute), false);
+
+                if(attrs != null && attrs.Length > 0)
                 {
-                    // Pop field or property name from path.
-                    pathStack.Pop();
+                    if(attrs.Length == 1)
+                    {
+                        members.Add(new PropertyInspectionInfo(property, (InspectAttribute)attrs[0]));
+                    }
+                    else
+                    {
+                        Warn($"Found multiple attributes of type {typeof(InspectAttribute).Name} on {property.DeclaringType.FullName}.{property.Name}");
+                    }
                 }
+            }
+
+            return members;
+        }
+
+        private void Draw(object target, IEnumerable<IMemberInspectionInfo> membersToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
+        {
+            foreach(var memberToInspect in membersToInspect)
+            {
+                // Push field or property name to path.
+                pathStack.Push(memberToInspect.Info.Name);
+
+                var inspectionKind = memberToInspect.InspectAttribute.InspectionKind;
+                var memberInfo = memberToInspect.Info;
+
+                // Warn if we cannot read the value.
+                if(memberToInspect.CanRead == false)
+                {
+                    Warn($"The following field or property cannot be read: {target.GetType().Name}.{memberInfo.Name}");
+                }
+                // If writing the value has been manually forbidden but the value should be selectable.
+                else if(inspectionKind == InspectionKind.ImmutableSelectable)
+                {
+                    DrawImmutableSelectable(target, memberToInspect, folderPathToIsExpanded, pathStack);
+                }
+                // If we cannot write the value or it has been manually forbidden.
+                else if(inspectionKind == InspectionKind.Immutable || memberToInspect.CanWrite == false)
+                {
+                    DrawImmutable(target, memberToInspect, folderPathToIsExpanded, pathStack);
+                }
+                else
+                {
+                    if(ShouldDrawTypeAsList(memberToInspect.RealType))
+                    {
+                        // Draw a list that can be modified.
+                        DrawIEnumerable(target, memberToInspect, false, folderPathToIsExpanded, pathStack);
+                    }
+                    else
+                    {
+                        DrawMutable(target, memberToInspect, folderPathToIsExpanded, pathStack);
+                    }
+                }
+
+                pathStack.Pop();
             }
         }
 
-
-
-        private object DrawReference(MemberInfoAndInspectAttr fieldOrPropertyInfo, object reference, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
+        private void DrawImmutableSelectable(object target, IMemberInspectionInfo memberToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
         {
-            InspectionKind inspectionType = fieldOrPropertyInfo.InspectAttribute.InspectionKind;
-
-            if(reference is UnityEngine.Object && inspectionType == InspectionKind.DropableObject)
+            if(ShouldDrawTypeAsList(memberToInspect.RealType))
             {
-                return BuiltInDrawers.DrawDropableObject(fieldOrPropertyInfo, (UnityEngine.Object)reference, false);
+                Warn($"It doesn't make sense to draw an instance of {memberToInspect.Info.ReflectedType.Name} as {InspectionKind.ImmutableSelectable}. It will be drawn as {InspectionKind.Immutable} instead.");
+                DrawIEnumerable(target, memberToInspect, true, folderPathToIsExpanded, pathStack);
             }
-            else if(reference is UnityEngine.Object && inspectionType == InspectionKind.DropableObjectAllowSceneObjects)
+            else
             {
-                return BuiltInDrawers.DrawDropableObject(fieldOrPropertyInfo, (UnityEngine.Object)reference, true);
+                // TODO Really draw references as selectable?
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PrefixLabel(memberToInspect.Info.Name);
+                string text = memberToInspect.GetValue(target).ToString();
+                EditorGUILayout.SelectableLabel(text);
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+
+        private void DrawImmutable(object target, IMemberInspectionInfo memberToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
+        {
+            if(ShouldDrawTypeAsList(memberToInspect.RealType))
+            {
+                // Lists are only readonly on their surface.
+                DrawIEnumerable(target, memberToInspect, true, folderPathToIsExpanded, pathStack);
+            }
+            else
+            {
+                // Create a readonly field.
+                string text = memberToInspect.GetValue(target).ToString();
+                EditorGUILayout.LabelField(memberToInspect.Info.Name, text);
+            }
+        }
+
+        private void DrawMutable(object target, IMemberInspectionInfo memberToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
+        {
+            var obj = memberToInspect.GetValue(target);
+            object newObj;
+
+            if(memberToInspect.RealType.IsEnum)
+            {
+                newObj = new EnumDrawer().Draw(memberToInspect, obj);
+            }
+            else
+            {
+                if(_drawers.TryGetValue(memberToInspect.RealType, out var drawer))
+                {
+                    //TODO better null checking (string)
+                    if(obj != null /*|| memberToInspect.RealType == typeof(string)*/)
+                    {
+                        newObj = drawer.Draw(memberToInspect, obj);
+                    }
+                    else
+                    {
+                        DrawNone(memberToInspect.Info.Name);
+                        newObj = null;
+                    }
+                }
+                else
+                {
+                    if(obj != null && memberToInspect.RealType.IsValueType)
+                    {
+                        Warn($"The following value-type has no registered drawer: {memberToInspect.RealType}");
+                        newObj = obj;
+                    }
+                    else
+                    {
+                        newObj = DrawMutableReference(memberToInspect, obj, folderPathToIsExpanded, pathStack);
+                    }
+                }
+            }
+
+            if(obj != newObj)
+                memberToInspect.SetValue(target, newObj);
+        }
+
+        private object DrawMutableReference(IMemberInspectionInfo fieldOrPropertyInfo, object reference, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
+        {
+            var inspectionType = fieldOrPropertyInfo.InspectAttribute.InspectionKind;
+
+            if(reference is UnityEngine.Object obj && inspectionType == InspectionKind.DropableObject)
+            {
+                return new DropableObjectDrawer().Draw(fieldOrPropertyInfo, obj, false);
+            }
+            else if(reference is UnityEngine.Object obj_ && inspectionType == InspectionKind.DropableObjectAllowSceneObjects)
+            {
+                return new DropableObjectDrawer().Draw(fieldOrPropertyInfo, obj_, true);
             }
             else
             {
                 if(reference == null)
                 {
-                    DrawNull(fieldOrPropertyInfo.Info.Name);
+                    DrawNone(fieldOrPropertyInfo.Info.Name);
                     return null;
                 }
                 else
                 {
-                    bool showReferenceMembers = GetOrCreateFoldoutVisibility(pathStack, foldoutData);
+                    var showReferenceMembers = GetOrCreateFoldoutVisibility(pathStack, foldoutData);
 
                     if(showReferenceMembers = EditorGUILayout.Foldout(showReferenceMembers, fieldOrPropertyInfo.Info.Name))
                     {
                         EditorGUI.indentLevel++;
                         {
-                            if(reference is IEnumerable<object>)
+                            if(reference is IEnumerable<object> enumerable)
                             {
-                                var enumerable = (IEnumerable<object>)reference;
                                 foreach(var item in enumerable)
                                 {
-                                    DrawInspectorRecursable(item, foldoutData, pathStack);
+                                    Draw(item, foldoutData, pathStack);
                                 }
                             }
                             else
                             {
-                                DrawInspectorRecursable(reference, foldoutData, pathStack);
+                                Draw(reference, foldoutData, pathStack);
                             }
                         }
                         EditorGUI.indentLevel--;
@@ -385,7 +348,7 @@ namespace InspectorReflector.Implementation
 
 
 
-        private void DrawIEnumerable(object target, MemberInfoAndInspectAttr fieldOrPropertyInfo, bool readOnly, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
+        private void DrawIEnumerable(object target, IMemberInspectionInfo fieldOrPropertyInfo, bool immutable, Dictionary<string, bool> foldoutData, Stack<string> pathStack)
         {
             var enumerable = (IEnumerable)fieldOrPropertyInfo.GetValue(target);
 
@@ -400,7 +363,7 @@ namespace InspectorReflector.Implementation
                     {
                         if(item == null)
                         {
-                            DrawNull($"Item {index + 1}");
+                            DrawNone($"Item {index + 1}");
                         }
                         else
                         {
@@ -429,7 +392,7 @@ namespace InspectorReflector.Implementation
                                 {
                                     EditorGUI.indentLevel++;
                                     {
-                                        DrawInspectorRecursable(item, foldoutData, pathStack);
+                                        Draw(item, foldoutData, pathStack);
                                     }
                                     EditorGUI.indentLevel--;
                                 }
@@ -459,7 +422,7 @@ namespace InspectorReflector.Implementation
 
         private bool GetOrCreateFoldoutVisibility(Stack<string> pathStack, Dictionary<string, bool> foldoutData)
         {
-            string path = String.Join(".", ReverseStack(pathStack));
+            var path = String.Join(".", ReverseStack(pathStack));
 
             bool showItems;
             if(foldoutData.TryGetValue(path, out showItems) == false)
@@ -500,9 +463,9 @@ namespace InspectorReflector.Implementation
 
 
 
-        private void DrawNull(string propertyName)
+        private void DrawNone(string propertyName)
         {
-            EditorGUILayout.LabelField(propertyName, "Not set (null).");
+            EditorGUILayout.LabelField(propertyName, "None");
         }
 
 

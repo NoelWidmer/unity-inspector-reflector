@@ -13,19 +13,19 @@ namespace InspectorReflector
 
 
         /// <summary>
-        ///     Sets the <see cref="InspectionKind"/> to <see cref="InspectionKind.Default"/>.
+        ///     Sets the <see cref="InspectionKind"/> to <see cref="InspectionKind.DefaultIR"/>.
         /// </summary>
         public InspectAttribute()
         {
-            InspectionKind = InspectionKind.Default;
+            InspectionKind = InspectionKind.DefaultIR;
         }
 
         /// <summary>
         ///     Allows a custom <see cref="InspectionKind"/>.
         /// </summary>
-        public InspectAttribute(InspectionKind inspectionType)
+        public InspectAttribute(InspectionKind inspectionKind)
         {
-            InspectionKind = inspectionType;
+            InspectionKind = inspectionKind;
         }
     }
 }

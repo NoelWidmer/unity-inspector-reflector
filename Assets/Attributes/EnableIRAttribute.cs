@@ -3,7 +3,7 @@
 namespace InspectorReflector
 {
     /// <summary>
-    ///     Classes marked with this attribute can be inspected by the IR.
+    ///     Classes marked with this attribute will be drawn using the IR.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class EnableIRAttribute : Attribute

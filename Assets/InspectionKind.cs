@@ -1,38 +1,44 @@
 ﻿namespace InspectorReflector
 {
     /// <summary>
-    ///     This type supports various ways to customize IR visuals.
+    ///     This type supports various ways to customize the IR visuals.
     /// </summary>
     public enum InspectionKind
     {
         /// <summary>
-        ///     Default inspection.
+        ///     The member will be drawn using the default IR visuals.
         /// </summary>
-        Default,
+        DefaultIR,
         /// <summary>
-        ///     The IR won't allow writing to the member.
+        ///     The member won't be mutated through the Inspector.
         /// </summary>
-        Readonly,
+        Immutable,
         /// <summary>
-        ///     The IR won't allow writing to the member. The text displayed can be selected and copyied.
+        ///     The member won't be mutated through the Inspector. The text displayed can be selected and copyied.
         /// </summary>
-        ReadonlySelectable,
+        ImmutableSelectable,
         /// <summary>
-        ///     An asset from the project can be droped to this IR field. Scene objects are not allowed.
+        ///     An asset from the project can be assigned to this member through drag and drop. 
+        ///     Scene objects are not allowed.
         /// </summary>
         DropableObject,
         /// <summary>
-        ///     An asset from the project can be droped to this IR field. Scene objects are allowed.
+        ///     An asset from the project can be assigned to this member through drag and drop. 
+        ///     Scene objects are allowed.
         /// </summary>
         DropableObjectAllowSceneObjects,
         /// <summary>
-        ///     An asset from the project can be droped to this IR field. Scene objects are allowed.
+        /// TODO. 
+        /// Build into unity. Works for: double, float, int and string. Effect unknown.
         /// </summary>
-        DelayedDouble,
-        DelayedFloat,
-        DelayedInt,
-        DelayedString,
-        TagString,
-        AreaString
+        Delayed,
+        /// <summary>
+        /// TDOO
+        /// </summary>
+        Tag,
+        /// <summary>
+        /// TODO.
+        /// </summary>
+        TextArea
     }
 }

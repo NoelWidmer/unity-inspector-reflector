@@ -7,7 +7,7 @@ namespace InspectorReflector
     ///     If the member is of type <see cref="ushort"/> the IR will display a dragable slider.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-    public sealed class InspectAsUShortSliderAttribute : InspectAttribute
+    public sealed class InspectAsUnsignedShortSliderAttribute : InspectAttribute
     {
         public readonly ushort SliderMin;
         public readonly ushort SliderMax;
@@ -17,7 +17,7 @@ namespace InspectorReflector
         /// <summary/>
         /// <param name="sliderMin">The minimum value of the slider.</param>
         /// <param name="sliderMax">The maximum value of the slider.</param>
-        public InspectAsUShortSliderAttribute(ushort sliderMin, ushort sliderMax)
+        public InspectAsUnsignedShortSliderAttribute(ushort sliderMin, ushort sliderMax)
         {
             SliderMin = sliderMin;
             SliderMax = sliderMax;
