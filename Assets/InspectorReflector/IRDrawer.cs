@@ -87,7 +87,7 @@ namespace InspectorReflector.Implementation
 
         private void Draw(object target, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
         {
-            var (fields, properties) = GetMembers(target);
+            var (fields, properties) = GetPublicInstanceMembers(target);
 
             properties = GetNonIndexedProperties(properties);
 
@@ -98,7 +98,7 @@ namespace InspectorReflector.Implementation
             Draw(target, membersToInspect, folderPathToIsExpanded, pathStack);
         }
 
-        private (List<FieldInfo> fields, List<PropertyInfo> properties) GetMembers(object target)
+        private (List<FieldInfo> fields, List<PropertyInfo> properties) GetPublicInstanceMembers(object target)
         {
             var fields = new List<FieldInfo>();
             var properties = new List<PropertyInfo>();
@@ -181,7 +181,7 @@ namespace InspectorReflector.Implementation
             return members;
         }
 
-        private void Draw(object target, IEnumerable<IMemberInspectionInfo> membersToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
+        private void Draw(object target, List<IMemberInspectionInfo> membersToInspect, Dictionary<string, bool> folderPathToIsExpanded, Stack<string> pathStack)
         {
             foreach(var memberToInspect in membersToInspect)
             {

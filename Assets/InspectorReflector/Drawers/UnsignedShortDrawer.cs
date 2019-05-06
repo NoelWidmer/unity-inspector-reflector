@@ -8,7 +8,7 @@ public class UnsignedShortDrawer : IDrawer<ushort>
     {
         int newValue;
 
-        if(attr.InspectAttribute is InspectAsUnsignedShortSliderAttributeAttribute attr_)
+        if(attr.InspectAttribute is InspectAsUnsignedShortSliderAttribute attr_)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(attr.Info.Name);

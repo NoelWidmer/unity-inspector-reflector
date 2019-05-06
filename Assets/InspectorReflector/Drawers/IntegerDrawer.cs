@@ -6,7 +6,7 @@ public class IntegerDrawer : IDrawer<int>
 {
     public override int Draw(IMemberInspectionInfo attr, int value)
     {
-        if(attr.InspectAttribute is InspectAsIntegerSliderAttributeAttribute attr_)
+        if(attr.InspectAttribute is InspectAsIntegerSliderAttribute attr_)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(attr.Info.Name);

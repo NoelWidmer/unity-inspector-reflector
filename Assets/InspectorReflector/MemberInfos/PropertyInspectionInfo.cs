@@ -19,9 +19,9 @@ namespace InspectorReflector.Implementation
 
         public InspectAttribute InspectAttribute { get; }
 
-        public bool CanRead => Info.CanRead;
+        public bool CanRead => Info.GetMethod != null && Info.GetMethod.IsPublic;
 
-        public bool CanWrite => Info.CanWrite;
+        public bool CanWrite => Info.SetMethod != null && Info.SetMethod.IsPublic;
 
         public object GetValue(object target) => Info.GetValue(target, null);
 

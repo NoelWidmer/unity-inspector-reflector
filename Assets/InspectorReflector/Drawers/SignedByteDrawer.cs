@@ -8,7 +8,7 @@ public class SignedByteDrawer : IDrawer<sbyte>
     {
         int newValue;
 
-        if(attr.InspectAttribute is InspectAsSignedByteSliderAttributeAttribute attr_)
+        if(attr.InspectAttribute is InspectAsSignedByteSliderAttribute attr_)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(attr.Info.Name);
