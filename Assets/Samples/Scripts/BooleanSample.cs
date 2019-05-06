@@ -5,11 +5,11 @@ using UnityEngine;
 public class BooleanSample : MonoBehaviour
 {
     [Inspect]
-    public bool BooleanField;
+    public bool Field;
 
     [Inspect]
-    public bool BooleanProperty { get => BooleanField; set => BooleanField = value; }
+    public bool Property { get => Field; set => Field = value; }
 
     [Inspect]
-    public bool BooleanReadonlyProperty { get => BooleanField; }
+    public bool ReadonlyProperty { get => Field; }
 }

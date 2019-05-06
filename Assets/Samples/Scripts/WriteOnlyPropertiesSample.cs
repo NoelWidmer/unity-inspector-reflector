@@ -5,14 +5,14 @@ using UnityEngine;
 public class WriteOnlyPropertiesSample : MonoBehaviour
 {
     [Inspect]
-    public byte BytePrivateSetter
+    public byte PrivateSetter
     {
         private get => default;
         set { }
     }
 
     [Inspect]
-    public byte ByteNoSetter
+    public byte NoSetter
     {
         set { }
     }

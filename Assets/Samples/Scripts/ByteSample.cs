@@ -5,11 +5,11 @@ using UnityEngine;
 public class ByteSample : MonoBehaviour
 {
     [Inspect]
-    public byte ByteField;
+    public byte Field;
 
     [Inspect]
-    public byte ByteProperty { get => ByteField; set => ByteField = value; }
+    public byte Property { get => Field; set => Field = value; }
 
     [Inspect]
-    public byte ByteReadonlyProperty { get => ByteField; }
+    public byte ReadonlyProperty { get => Field; }
 }
