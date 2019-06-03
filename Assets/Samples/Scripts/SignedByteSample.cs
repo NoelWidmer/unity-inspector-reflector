@@ -12,4 +12,10 @@ public class SignedByteSample : MonoBehaviour
 
     [Inspect]
     public sbyte ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public sbyte PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public sbyte PropertyAsSelectable { get => Field; set => Field = value; }
 }

@@ -12,4 +12,10 @@ public class LongSample : MonoBehaviour
 
     [Inspect]
     public long ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public long PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public long PropertyAsSelectable { get => Field; set => Field = value; }
 }

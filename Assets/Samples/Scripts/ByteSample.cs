@@ -12,4 +12,10 @@ public class ByteSample : MonoBehaviour
 
     [Inspect]
     public byte ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public byte PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public byte PropertyAsSelectable { get => Field; set => Field = value; }
 }

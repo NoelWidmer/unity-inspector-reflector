@@ -12,4 +12,10 @@ public class BoundsSample : MonoBehaviour
 
     [Inspect]
     public Bounds ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public Bounds PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public Bounds PropertyAsSelectable { get => Field; set => Field = value; }
 }

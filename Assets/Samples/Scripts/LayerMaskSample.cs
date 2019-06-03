@@ -12,4 +12,10 @@ public class LayerMaskSample : MonoBehaviour
 
     [Inspect]
     public LayerMask ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public LayerMask PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public LayerMask PropertyAsSelectable { get => Field; set => Field = value; }
 }

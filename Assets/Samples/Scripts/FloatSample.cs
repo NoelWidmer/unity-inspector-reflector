@@ -12,4 +12,10 @@ public class FloatSample : MonoBehaviour
 
     [Inspect]
     public float ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public float PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public float PropertyAsSelectable { get => Field; set => Field = value; }
 }

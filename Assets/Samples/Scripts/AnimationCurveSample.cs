@@ -12,4 +12,10 @@ public class AnimationCurveSample : MonoBehaviour
 
     [Inspect]
     public AnimationCurve ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public AnimationCurve PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public AnimationCurve PropertyAsSelectable { get => Field; set => Field = value; }
 }

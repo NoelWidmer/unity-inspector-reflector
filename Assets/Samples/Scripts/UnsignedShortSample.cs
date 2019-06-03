@@ -12,4 +12,10 @@ public class UnsignedShortSample : MonoBehaviour
 
     [Inspect]
     public ushort ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public ushort PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public ushort PropertyAsSelectable { get => Field; set => Field = value; }
 }

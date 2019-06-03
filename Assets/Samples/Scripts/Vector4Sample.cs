@@ -12,4 +12,10 @@ public class Vector4Sample : MonoBehaviour
 
     [Inspect]
     public Vector4 ReadonlyProperty { get => Field; }
+
+    [Inspect(InspectionKind.Immutable)]
+    public Vector4 PropertyAsReadonly { get => Field; set => Field = value; }
+
+    [Inspect(InspectionKind.ImmutableSelectable)]
+    public Vector4 PropertyAsSelectable { get => Field; set => Field = value; }
 }
