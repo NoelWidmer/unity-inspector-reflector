@@ -1,3 +1,5 @@
+> :warning: **This repository is no longer maintained. Have a look at [Odin](https://odininspector.com/) if you are in need of an improved inspector experience. I use Odin and it's great!**
+
 # Unity3D Inspector Reflector
 
 <!--http://doctoc.herokuapp.com/-->
@@ -136,8 +138,8 @@ The visuals of the IR's default inspection are in most cases exactly the same as
 
 ### Customized Inspection
 
-Coming soon
+~~Coming soon~~
 
 ### Extensability
 
-Coming soon
+~~Coming soon~~
