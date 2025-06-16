@@ -1,4 +1,4 @@
-> :warning: **This repository is no longer maintained. Have a look at [Odin](https://odininspector.com/) if you are in need of an improved inspector experience. I use Odin and it's great!**
+:warning: **This repository is no longer maintained. It no longer reflects my views on good software design. Have a look at [Odin](https://odininspector.com/) if you are in need of an improved inspector experience.**
 
 # Unity3D Inspector Reflector
 
